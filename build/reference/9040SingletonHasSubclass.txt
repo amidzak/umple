@@ -1,4 +1,4 @@
-E034 Multiple Inheritance
+E040 Singleton Has Subclasses
 Errors and Warnings
 noreferences
 
