@@ -2489,7 +2489,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     String interfaceContent="";
 
     Integer scopeDepth=0;// if it is 1 means we are in the main class. If depth more than 1 it means we are in an inner class.
-    String[] lines = classContent.split(System.getProperty("line.separator"));
+    String[] lines = classContent.split("\n|"+System.getProperty("line.separator"));
     /*
     ** Loop going through all of the class file line by line
     */
