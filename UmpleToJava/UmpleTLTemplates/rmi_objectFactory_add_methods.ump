@@ -32,7 +32,6 @@ class UmpleToJava {
   {
   <<=uClass.getName()>>Impl object = new <<=uClass.getName()>>Impl(<<=gClass.getLookup("constructorSignature_caller")>>);
   object.setRealSelf(proxy);
-  object.startRMI();
   listOf<<=uClass.getName()>>.add(object);
   return object;
   }

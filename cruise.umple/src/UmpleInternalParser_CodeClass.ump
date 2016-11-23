@@ -391,7 +391,7 @@ private void setParentClassesDefaultInterface()
 {
   for (UmpleClass uClass:  model.getUmpleClasses())
   {
-    if ((uClass.getNeedsDefaultInterface())||(uClass.getIsDistributed())||(uClass.getHasProxyPattern()))
+    if ((uClass.getNeedsDefaultInterface())&&((uClass.getIsDistributed())||(uClass.getHasProxyPattern())))
     {
       if(uClass.getExtendsClass()!=null) 
       {
