@@ -136,7 +136,7 @@ for (StateMachine smq : uClass.getStateMachines())
   <<#getMemberCode(realSb, model,uClass,gClass,gen,isFirst);
   getConstructorCode(realSb, model,uClass,gClass,gen,isFirst, false);
   getProxyReferenceCode(realSb, model,uClass);
-  getDistributedMethodsCode(realSb, model,uClass);
+  //getDistributedMethodsCode(realSb, model,uClass);
   getAttributeCode(realSb, model,uClass,gClass,gen,isFirst,false);
   getStateMachine1Code(realSb, model,uClass,gClass,gen,isFirst,false);
   getAssociationCode(realSb, model,uClass,gClass,gen,isFirst,false);

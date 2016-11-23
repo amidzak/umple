@@ -249,7 +249,7 @@ public class TemplateTest
 
     // Tear down Client
     SampleFileWriter.destroy(pathToInput + "/Client.java");
-    
+    /*
     SampleFileWriter.destroy(pathToInput + "/java/IClient.java");
     SampleFileWriter.destroy(pathToInput + "/java/ClientI.java");
     SampleFileWriter.destroy(pathToInput + "/java/Client.java");
@@ -270,7 +270,7 @@ public class TemplateTest
     SampleFileWriter.destroy(pathToInput + "/java/UmpleObjectFactory.java");
     SampleFileWriter.destroy(pathToInput + "/java/IUmpleObjectFactory.java");
     SampleFileWriter.destroy(pathToInput + "/java/Main.java");
-    
+    */
     SampleFileWriter.destroy(pathToInput + "/client.rb");
     SampleFileWriter.destroy(pathToInput + "/Client.php");
     

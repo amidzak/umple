@@ -6,5 +6,5 @@ class Client
 class CC
 {
   public void someMethod1()
-  {}	
+  {}
 }
