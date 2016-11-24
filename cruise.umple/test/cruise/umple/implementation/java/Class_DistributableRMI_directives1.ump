@@ -1,4 +1,5 @@
 distribute RMI forced;
+namespace distributed.rmi.directives3;
 class CC
 {
   isA Father;
