@@ -1,3 +1,4 @@
+namespace distributed.rmi5;
 interface ClientI
 {
 }
@@ -6,6 +7,14 @@ class Client
   distributable RMI;
   isA ClientI;
   isA CC;
+  public static void method2()
+  {
+
+  }
+  static int method3()
+  {
+    return 12;
+  }
 }
 class CC
 {
