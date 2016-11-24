@@ -2518,7 +2518,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       }
       boolean isSerializable=true;
       String lineWOSpace= line.replace(" ", "");
-      boolean isMethod=true;
+      boolean isMethod=false;
       boolean isNonStatic=true;
       if (scopeDepth==1)
       {
@@ -2526,7 +2526,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
         int endSignature=line.lastIndexOf(")");
         for(int i=0;i<tokensInMethod.length;i+=1)
         {
-          if (!tokensInMethod[i].contains("public"))
+          if (tokensInMethod[i].contains("public"))
           {
             isMethod=true;
           }
@@ -2545,7 +2545,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
           }  
         }
         if (startSignature>=endSignature)
-          isMethod=false;       
+          isMethod=false;      
         if(isMethod)
         {
           String methodType=line.substring(0,startSignature).replaceAll("\\s+$", "");// trimming the spaces on the right
