@@ -1,3 +1,4 @@
+namespace distributed.rmi2;
 class Client
 {
    isA CC;

@@ -2493,61 +2493,71 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       String[] tokensInMethod = line.split(" |<|>|\\(|\\)|,");
 
       if (tokensInMethod!=null && tokensInMethod.length>0){
-        if ((tokensInMethod[0].contains("package"))||(lineNumber<3)) 
+        if ((tokensInMethod[0].contains("import"))||(tokensInMethod[0].contains("package"))||(lineNumber<3)) 
         {
           proxyContent+=line+NL;
           remoteInterfaceContent+=line+NL;
         }
       }
+      String remoteException="";
+      if(!aClass.getIsDistributed())
+      {
+        remoteException="import java.rmi.RemoteException;"+NL;
+      }
       if((scopeDepth==0)&&(line.contains("class")))
       { 
         
-        proxyContent+="import java.rmi.RemoteException;"+NL+"public class "+proxyName+extendsProxy+proxyImplements;
+        proxyContent+=remoteException+"public class "+proxyName+extendsProxy+proxyImplements;
         proxyContent+=NL+"{"+NL+"  "+remoteInterfaceName+" realObject;"+NL;
         proxyContent+="  public void setRealObject("+remoteInterfaceName+" aObject)"+NL+"  {"+NL;
         proxyContent+="    realObject=aObject;"+NL+"  }"+NL;
         proxyContent+="  public "+remoteInterfaceName+" getRealObject()"+NL+"  {"+NL;
         proxyContent+="    return realObject;"+NL+"  }"+NL;
 
-        remoteInterfaceContent+="import java.rmi.RemoteException;"+NL+"interface "+remoteInterfaceName+" extends java.rmi.Remote"+parentDefaultInterface+NL+"{"+NL;
+        remoteInterfaceContent+=remoteException+"public interface "+remoteInterfaceName+" extends java.rmi.Remote"+parentDefaultInterface+NL+"{"+NL;
       }
       boolean isSerializable=true;
       String lineWOSpace= line.replace(" ", "");
-      int position=-1;
-
-      if (scopeDepth==1){
-        if (line.contains(";")){
-          //proxyContent+="";
-          }
+      boolean isMethod=true;
+      boolean isNonStatic=true;
+      if (scopeDepth==1)
+      {
         int startSignature=line.indexOf("(");
         int endSignature=line.lastIndexOf(")");
         for(int i=0;i<tokensInMethod.length;i+=1)
         {
-          if ((tokensInMethod[i].contains("public"))&&(startSignature<endSignature))
+          if (!tokensInMethod[i].contains("public"))
           {
-          position=i;
+            isMethod=true;
+          }
+          if ((tokensInMethod[i].equals("enum"))||tokensInMethod[i].contains("abstract"))
+          {
+            isMethod=false;
+            break;
           }     
-          if((tokensInMethod[i].equals("enum"))||(tokensInMethod[i].equals("static"))||tokensInMethod[i].contains("abstract")||(tokensInMethod[i].equals("List")))
+          if((tokensInMethod[i].equals("static")))
           {
-            position=-1;
-            continue;  
+            isNonStatic=false;
           }
           if ((tokensInMethod[i].contains("["))||(tokensInMethod[i].equals("toString")))
           {
             isSerializable=false;
           }  
-        } 
-        if(position>=0)
+        }
+        if (startSignature>=endSignature)
+          isMethod=false;       
+        if(isMethod)
         {
           String methodType=line.substring(0,startSignature).replaceAll("\\s+$", "");// trimming the spaces on the right
           String methodName=methodType.substring(methodType.lastIndexOf(" ")+1);
 
           String returnString="return ";
           String breakString="";
-          if(methodType.indexOf("void")>=0){
+          if(methodType.indexOf("void")>=0)
+          {
             returnString="";
             breakString="        break;"+NL;
-            }
+          }
 
 
           String callerSignature="";
@@ -2568,37 +2578,63 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
             }
           }
           callerSignature+=arguments.substring(arguments.replaceAll("\\s+$", "").lastIndexOf(" ")+1,arguments.length());
-          
-          if (!methodName.equals(realClassName)){
-            if(!lineWOSpace.substring(lineWOSpace.length()-2,lineWOSpace.length()).contains("{"))
+          if (!methodName.equals(realClassName))
+          {
+            if(isNonStatic)
             {
-              if (isSerializable==true)
+              if (isSerializable==true||!aClass.getIsDistributed())
               {
                 if (parentInterface==null||methodName.equals("setRealSelf")||methodName.equals("delete"))
-                  remoteInterfaceContent+=line.substring(0,line.length())+"throws RemoteException;"+NL;
-              
-                proxyContent+=line.substring(0,line.length())+NL+"  {"+NL+"    while(true)"+NL+"      try{"+NL+"        "+returnString+"realObject."+methodName+"("+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
-              }  
-            }
-           else
-            {
-              if (isSerializable==true)
-              {
-                if(parentInterface==null||methodName.equals("setRealSelf")||methodName.equals("delete"))
-                  remoteInterfaceContent+=line.substring(0,line.length()-1)+"throws RemoteException;"+NL;            
-                proxyContent+=line.substring(0,line.length()-1)+NL+"  {"+NL+"    while(true)"+NL+"      try{"+NL+"        "+returnString+"realObject."+methodName+"("+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
+                  remoteInterfaceContent+=line.substring(0,endSignature)+") throws RemoteException;"+NL;  
               }
-            } 
-          }
-          else{
+            }               
+            boolean doesThrow=false;
+            String methodDeclarationLine="";
+            if(line.substring(endSignature).contains("throws"))
+            {
+              doesThrow=true;
+            }
+            if(!lineWOSpace.substring(lineWOSpace.length()-2,lineWOSpace.length()).contains("{"))
+            {
+              methodDeclarationLine=line.substring(0,line.length())+NL+"  {"+NL;
+            }
+            else
+            {
+              methodDeclarationLine=line.substring(0,line.length()-1)+NL+"  {"+NL;
+            }
+
+            if (isSerializable==true||!aClass.getIsDistributed())
+            {
+              if(doesThrow && isNonStatic)
+              {
+                proxyContent+=methodDeclarationLine+"    try{"+NL+"      "+returnString+"realObject."+methodName+"("+callerSignature+");"+NL+breakString+"      }"+NL+"    finally {}"+NL+"  }"+NL;
+              }
+
+              if(!doesThrow && isNonStatic)
+              {
+                proxyContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+"realObject."+methodName+"("+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
+              }
+              if(doesThrow && !isNonStatic)
+              {
+                proxyContent+=methodDeclarationLine+"    try{"+NL+"      "+returnString+realClassName+"."+methodName+"("+callerSignature+");"+NL+breakString+"      }"+NL+"    finally {}"+NL+"  }"+NL;
+              }
+
+              if(!doesThrow && !isNonStatic)
+              {
+                proxyContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+realClassName+"."+methodName+"("+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
+              }
+            }
+          }   
+          else
+          {
             String lastArgument="";
             if (!callerSignature.isEmpty())
               lastArgument=", ";
             methodType= "  public "+proxyName;
-            proxyContent+=methodType+"("+arguments+lastArgument+"String component)"+NL+"  {\n    realObject = UmpleObjectFactory.theInstance.add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);\n  }\n";
-            proxyContent+=methodType+"("+arguments+lastArgument+"int component)"+NL+"  {"+NL+"    realObject = UmpleObjectFactory.theInstance.add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);"+NL+"  }"+NL;
+            proxyContent+=methodType+"("+arguments+lastArgument+"String component)"+NL+"  {\n    realObject = UmpleObjectFactory.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);\n  }\n";
+            proxyContent+=methodType+"("+arguments+lastArgument+"int component)"+NL+"  {"+NL+"    realObject = UmpleObjectFactory.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);"+NL+"  }"+NL;
 
-            proxyContent+=methodType+"("+arguments+")"+NL+"  {"+NL+"    realObject = UmpleObjectFactory.theInstance.create"+aClass.getName()+"("+callerSignature+lastArgument+"this);\n  }"+NL+"";
+            proxyContent+=methodType+"("+arguments+")"+NL+"  {"+NL+"    realObject = UmpleObjectFactory.getInstance().create"+aClass.getName()+"("+callerSignature+lastArgument+"this);\n  }"+NL+"";
           }      
         }
       }
@@ -2618,7 +2654,8 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     String filename;
 /*
     // write file only if needs default interface
-    if (aClass.getNeedsDefaultInterface()){
+    if (aClass.getNeedsDefaultInterface())
+    {
 	    filename = path + File.separator + interfaceName + ".java";
 	    File file = new File(path);
 	    file.mkdirs();
@@ -2639,7 +2676,8 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     }
 */
     // write generated proxy code
-    if (aClass.getHasProxyPattern()){
+    if (aClass.getHasProxyPattern())
+    {
       filename = path + File.separator + proxyName + ".java";
       File file = new File(path);
       file.mkdirs();
@@ -2657,11 +2695,12 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       {
         bw.close();
       } 
-    }
+  }
 
 
 // writing the generated code for the remote interface
-    if ((aClass.getIsDistributed()|| aClass.getNeedsDefaultInterface())&& aClass.getDistributeTechnology().equals("RMI")){
+    if ((aClass.getIsDistributed()|| aClass.getNeedsDefaultInterface())&& aClass.getDistributeTechnology().equals("RMI"))
+    {
       filename = path + File.separator + remoteInterfaceName + ".java";
       File fileRemote = new File(path);
       fileRemote.mkdirs();
@@ -2685,8 +2724,11 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
   public void writeObjectFactoryClass() throws IOException
   {
     String name="UmpleObjectFactory";
+    String packageName="";
+    if (getModel().getDefaultNamespace()!=null)
+      packageName=getModel().getDefaultNamespace();    
   	ILang language = new JavaObjectFactoryClassGenerator();
-    String path = StringFormatter.addPathOrAbsolute(getModel().getUmpleFile().getPath(), getOutput()); 
+    String path = StringFormatter.addPathOrAbsolute(getModel().getUmpleFile().getPath(), getOutput())+packageName.replace(".", File.separator); 
     String filename = path + File.separator + name+".java";
     File file = new File(path);
     file.mkdirs();
@@ -2708,7 +2750,10 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
   {     
     String name="IUmpleObjectFactory";
     ILang language = new JavaObjectFactoryInterfaceGenerator();
-    String path = StringFormatter.addPathOrAbsolute(getModel().getUmpleFile().getPath(), getOutput()); 
+    String packageName="";
+    if (getModel().getDefaultNamespace()!=null)
+      packageName=getModel().getDefaultNamespace();
+    String path = StringFormatter.addPathOrAbsolute(getModel().getUmpleFile().getPath(), getOutput())+packageName.replace(".", File.separator);
     String filename = path + File.separator + name +".java";
     File file = new File(path);
     file.mkdirs();
