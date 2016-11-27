@@ -17,3 +17,4 @@ use TestHarnessCompositionsLeft.ump;
 use TestHarnessCompositionsRight.ump;
 use TestHarnessAssociationSpecializations.ump;
 use TestHarnessDistributed.ump;
+use TestHarnessDistributed2.ump;

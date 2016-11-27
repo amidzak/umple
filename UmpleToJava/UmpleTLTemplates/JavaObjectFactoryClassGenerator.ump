@@ -53,7 +53,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.*;
-
+<<#for(UmpleClass uClass: model.getUmpleClasses())
+{
+  if (uClass.getIsDistributed())
+  {
+#>>
+import <<=uClass.getPackageName()>>.<<=uClass.getName()>>;
+<<#  
+  }
+}
+ #>>
 
 public class UmpleObjectFactory implements IUmpleObjectFactory
 {
@@ -92,10 +101,17 @@ public class UmpleObjectFactory implements IUmpleObjectFactory
     components= new ArrayList<UmpleComponent>();
     initialize();
   }
+  public int getComponentId(int umpleComponentId)
+  {
+    int componentId=umpleComponentId;
+    if(componentId>=components.size())
+      componentId=components.size()-1;
+    return componentId;
+  }
   public int getComponentId(String umpleComponentName)
   {
-    int ComponentId=0;
-    return ComponentId;
+    int componentId=0;
+    return getComponentId(componentId);
   }
   public void initialize()
   {    
@@ -103,7 +119,7 @@ public class UmpleObjectFactory implements IUmpleObjectFactory
     if(getThisComponentId()<0)
       readConfigFile();
     readComponentsFile();
-    int numberOfComponents= components.size();
+    int numberOfComponents= getComponentId(components.size())+1;
     System.out.println(getThisComponentId());
     startRMI();
     for(int component=0;component<numberOfComponents;component=component+1)
