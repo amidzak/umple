@@ -9,7 +9,7 @@ class UmpleToJava {
     while(true){
       try
       {
-        return remoteFactories.get(component).create<<=uClass.getName()>>(<<=gClass.getLookup("constructorSignature_caller")>><<=argumentscomma>>proxy);
+        return remoteFactories.get(getComponentId(component)).create<<=uClass.getName()>>(<<=gClass.getLookup("constructorSignature_caller")>><<=argumentscomma>>proxy);
       }
       catch(Exception e) 
       {
