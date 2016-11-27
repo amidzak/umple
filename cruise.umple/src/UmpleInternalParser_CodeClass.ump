@@ -397,21 +397,22 @@ private void setParentClassesDefaultInterface()
       {
         if(!uClass.getExtendsClass().getNeedsDefaultInterface()&&!uClass.getExtendsClass().getIsDistributed())
         {
-          setParentDefaultInterfaceRecursive(uClass.getExtendsClass());
+          setParentDefaultInterfaceRecursive(uClass.getExtendsClass(),uClass.getIsDistributed());
         }
       }
     }
   }
 }
 
-private void setParentDefaultInterfaceRecursive(UmpleClass uClass)
+private void setParentDefaultInterfaceRecursive(UmpleClass uClass,Boolean isDistributed)
 {
+  uClass.setIsDefaultInterfaceRemoteRMI(isDistributed);
   uClass.setNeedsDefaultInterface(true);
   if(uClass.getExtendsClass()!=null) 
   {
     if(!uClass.getExtendsClass().getNeedsDefaultInterface())
     {
-      setParentDefaultInterfaceRecursive(uClass.getExtendsClass());
+      setParentDefaultInterfaceRecursive(uClass.getExtendsClass(),isDistributed);
     }
   }
 }
