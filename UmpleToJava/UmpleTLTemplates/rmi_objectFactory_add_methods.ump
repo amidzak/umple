@@ -34,8 +34,7 @@ class UmpleToJava {
   else{
 #>>
   {
-  <<=uClass.getName()>>Impl object = new <<=uClass.getName()>>Impl(<<=gClass.getLookup("constructorSignature_caller")>>);
-  object.setRealSelf(proxy);
+  <<=uClass.getName()>>Impl object = new <<=uClass.getName()>>Impl(<<=gClass.getLookup("constructorSignature_caller")+argumentscomma>>proxy);
   listOf<<=uClass.getName()>>.add(object);
   while(true){
     try

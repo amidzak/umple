@@ -2671,8 +2671,19 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
             if(aClass.getIsDistributed())
             {
               String lastArgument="";
-              if (!callerSignature.isEmpty())
-                lastArgument=", ";
+              if(arguments.lastIndexOf(",")>0)
+              {
+                arguments=arguments.substring(0,arguments.lastIndexOf(","));
+                callerSignature=callerSignature.substring(0,callerSignature.lastIndexOf(","));   
+                lastArgument=", ";          
+              }
+              else
+              {
+                arguments="";
+                callerSignature="";
+                
+              }              
+             
               proxyContent+=methodType+"("+arguments+lastArgument+"String component)"+NL+"  {\n    realObject = UmpleObjectFactory.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);\n  }\n";
               proxyContent+=methodType+"("+arguments+lastArgument+"int component)"+NL+"  {"+NL+"    realObject = UmpleObjectFactory.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);"+NL+"  }"+NL;
 
