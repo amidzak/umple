@@ -38,7 +38,7 @@ class UmpleToJava {
     }  
   }  
   String accessibility = uClass.getIsSingleton() ? "private" : "public";
-  append(realSb,"\n  {0} {1}({2})",new Object[] {accessibility, uClass.getName(), gClass.getLookup("constructorSignature")+proxySignature});
+  append(realSb,"\n  {0} {1}({2}{3})",new Object[] {accessibility, uClass.getName(), gClass.getLookup("constructorSignature"),proxySignature});
 
   String extraNote = null;
   
