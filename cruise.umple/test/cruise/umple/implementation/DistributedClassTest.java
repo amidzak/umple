@@ -423,12 +423,13 @@ public class DistributedClassTest extends TemplateTest
   {
 	  assertObjectFactory("java/Class_DistributableRMI4.ump", languagePath + "/Class_DistributableRMI4_UmpleObjectFactory."+ languagePath +".txt",languagePath + "/Class_DistributableRMI4_IUmpleObjectFactory."+ languagePath +".txt");
   }
+  /
   @Test
   public void ClassDistributedExtention5()
   {
 	  assertUmpleTemplateFor("java/Class_DistributableRMI6.ump", languagePath + "/Class_DistributableRMI5."+ languagePath +".txt", "Microwave");
   }
-  
+  /*
   @Test
   public void ClassDistributedExtention5_parent()
   {

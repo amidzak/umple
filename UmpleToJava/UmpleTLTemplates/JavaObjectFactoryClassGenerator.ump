@@ -58,7 +58,7 @@ import java.util.*;
   if (uClass.getIsDistributed())
   {
 #>>
-import <<=uClass.getPackageName()>>.<<=uClass.getName()>>;
+import <<=uClass.getPackageName()>>.*;
 <<#  
   }
 }
