@@ -67,12 +67,12 @@ import <<=uClass.getPackageName()>>.*;
 public class UmpleObjectFactory implements IUmpleObjectFactory
 {
   public static UmpleObjectFactory theInstance = null;
-  List<IUmpleObjectFactory> remoteFactories;
-  private String fileAddress="";
+  static List<IUmpleObjectFactory> remoteFactories;
+  private static String fileAddress="";
 
   <<@ UmpleToJava.objectFactory_listOfObjects_All >>
-  private List<UmpleComponent> components;
-  Registry rmiRegistry;
+  private static List<UmpleComponent> components;
+  static Registry rmiRegistry;
   static int thisComponentId=-1;
 
   public static int getThisComponentId()
@@ -101,14 +101,14 @@ public class UmpleObjectFactory implements IUmpleObjectFactory
     components= new ArrayList<UmpleComponent>();
     initialize();
   }
-  public int getComponentId(int umpleComponentId)
+  public static int getComponentId(int umpleComponentId)
   {
     int componentId=umpleComponentId;
     if(componentId>=components.size())
       componentId=components.size()-1;
     return componentId;
   }
-  public int getComponentId(String umpleComponentName)
+  public static int getComponentId(String umpleComponentName)
   {
     int componentId=0;
     return getComponentId(componentId);

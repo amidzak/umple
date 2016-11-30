@@ -17,25 +17,13 @@ class UmpleToJava {
 #>>
 
   public <<=uClass.getName()>>(<<=gen.translate("constructorMandatory",uClass)>><<#
-  if(uClass.getIsDistributed())
-  {  
-    if(!gen.translate("constructorMandatory",uClass).equals(""))
-    {
-      append(realSb, ", "+uClass.getName().substring(0,uClass.getName().length()-4)+" proxy");
-    }
-    else
-    {
-      append(realSb,uClass.getName().substring(0,uClass.getName().length()-4)+" proxy");
-    }
-  }  
   #>>)
   {
 <<#
   if(uClass.getIsDistributed())
   {
     #>>
-    realSelf=proxy;
-    realSelf.setRealObject(this);
+    realSelf= new <<=uClass.getName().substring(0,uClass.getName().length()-4)>>Proxy(this);
     while(true)
     {
       try

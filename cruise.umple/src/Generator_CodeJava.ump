@@ -1359,7 +1359,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
               }  
               else
               {
-                implementedInterfaces += "I"+uClass.getName()+ "," ;
+                implementedInterfaces += uClass.getName()+ "," ;
               }   
           }            
           implementedInterfaces = implementedInterfaces.substring(0, implementedInterfaces.length()-1); 
@@ -2467,28 +2467,31 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     /* if distributed class has a distributable interface parent and does not need parent interface the remote interface needs to know the name of it
     */    
 
-    if(aClass.getExtendsClass()!=null){
+    if(aClass.getExtendsClass()!=null)
+    {
       extendsProxy=" extends "+aClass.getExtendsClass().getName();
-        parentDefaultInterface=aClass.getExtendsClass().getName(); 
+      parentDefaultInterface="extends "+aClass.getExtendsClass().getName(); 
     }
 
     realClassName=aClass.getName();
     if (aClass.getHasProxyPattern())
+    {
       realClassName+="Impl";
+      proxyImplements+=" implements "+interfaceName;
+    }
     if(aClass.getIsDistributed())
     {
-      proxyImplements=" implements java.io.Serializable";
+      proxyImplements+=",java.io.Serializable";
       for(UmpleInterface interfaceParent: aClass.getParentInterface())
       { 
         if(interfaceParent.getIsDistributable()){
           parentInterface=interfaceParent;
-          parentDefaultInterface=" ,"+parentInterface.getName();
-          proxyImplements=", "+parentInterface.getName();
+          proxyImplements+=", "+parentInterface.getName();
           interfaceName=parentInterface.getName();
         }
       }
     }    
-
+    
     Integer scopeDepth=0;// if it is 1 means we are in the main class. If depth more than 1 it means we are in an inner class.
     String[] lines = classContent.split("\n|"+System.getProperty("line.separator"));
     /*
@@ -2505,6 +2508,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
         {
           proxyContent+=line+NL;
           remoteInterfaceContent+=line+NL;
+          interfaceContent+=line+NL;
         }
       }
       String defaultNamespace ="";
@@ -2527,8 +2531,8 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
         proxyContent+="  public "+remoteInterfaceName+" getRealObject()"+NL+"  {"+NL;
         proxyContent+="    return realObject;"+NL+"  }"+NL;
 
-        remoteInterfaceContent+=remoteImports+"public interface "+remoteInterfaceName+" extends "+interfaceName+NL+"  {"+NL;
-        interfaceContent+=remoteImports+"public interface "+interfaceName+" extends java.rmi.Remote"+parentDefaultInterface+NL+"{"+NL;
+        remoteInterfaceContent+=remoteImports+"public interface "+remoteInterfaceName+" extends java.rmi.Remote, "+interfaceName+NL+"  {"+NL;
+        interfaceContent+=remoteImports+"public interface "+interfaceName+parentDefaultInterface+NL+"{"+NL;
       }
       boolean isSerializable=true;
       String lineWOSpace= line.replace(" ", "");
@@ -2688,11 +2692,11 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
 
               proxyContent+=methodType+"("+arguments+")"+NL+"  {"+NL+"    realObject = UmpleObjectFactory.getInstance().create"+aClass.getName()+"("+callerSignature+lastArgument+"this);\n  }"+NL+"";
               */
-              proxyContent+=methodType+"("+arguments+")"+NL+"  {}"+NL;
+              proxyContent+=methodType+"("+realClassName+" object"+")"+NL+"  {"+NL+"    realObject=object;"+"  }"+NL;
             }
             else
             {
-                            proxyContent+=methodType+"("+arguments+")"+NL+"  {}"+NL;
+              proxyContent+=methodType+"("+realClassName+" object"+")"+NL+"  {"+NL+"    realObject=object;"+"  }"+NL;
             }
           }      
         }

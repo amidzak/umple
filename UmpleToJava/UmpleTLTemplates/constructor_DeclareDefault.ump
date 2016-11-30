@@ -25,20 +25,9 @@ class UmpleToJava {
 
   String customConstructorPrefixCode = GeneratorHelper.toCode(uClass.getApplicableCodeInjections("before","constructor"));
   String customConstructorPostfixCode = GeneratorHelper.toCode(uClass.getApplicableCodeInjections("after","constructor"));
-  String proxySignature="";
-  if(uClass.getIsDistributed())
-  {    
-    if(!gClass.getLookup("constructorSignature").equals(""))
-    {
-      proxySignature=", "+uClass.getName().substring(0,uClass.getName().length()-4)+" proxy";
-    }
-    else
-    {
-      proxySignature=uClass.getName().substring(0,uClass.getName().length()-4)+" proxy";
-    }  
-  }  
+
   String accessibility = uClass.getIsSingleton() ? "private" : "public";
-  append(realSb,"\n  {0} {1}({2}{3})",new Object[] {accessibility, uClass.getName(), gClass.getLookup("constructorSignature"),proxySignature});
+  append(realSb,"\n  {0} {1}({2})",new Object[] {accessibility, uClass.getName(), gClass.getLookup("constructorSignature")});
 
   String extraNote = null;
   
@@ -50,8 +39,7 @@ class UmpleToJava {
   if(uClass.getIsDistributed())
   {
     #>>
-    realSelf=proxy;
-    realSelf.setRealObject(this);
+    realSelf= new <<=uClass.getName().substring(0,uClass.getName().length()-4)>>Proxy(this);
     while(true)
     {
       try

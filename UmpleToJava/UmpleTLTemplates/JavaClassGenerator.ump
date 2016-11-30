@@ -185,9 +185,9 @@ for (StateMachine smq : uClass.getStateMachines())
   //------------------------
   <<=uClass.getName().substring(0,uClass.getName().length()-4)>> realSelf;
   
-  public void setRealSelf(<<=uClass.getName().substring(0,uClass.getName().length()-4)>> self)
+  public <<=uClass.getName().substring(0,uClass.getName().length()-4)>> getRealSelf()
   {
-    realSelf=self;
+    return realSelf;
   }
 
     <<#}return realSb.toString();
