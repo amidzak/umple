@@ -8,6 +8,7 @@ class UmpleToJava {
   {
     if(getComponentId(component)==getThisComponentId())
       return new<<=uClass.getName()>>(<<=gClass.getLookup("constructorSignature_caller")>>);
+      getInstance();
     while(true){
       try
       {
@@ -22,20 +23,12 @@ class UmpleToJava {
   <<#
   }
   if(isInterface!=true){
-    append(realSb,"\n  {0} static {1}({2}int component)",new Object[] {accessibility,uClass.getName()+" new"+uClass.getName(), arguments});
+    append(realSb,"\n  {0} static {1}({2})",new Object[] {accessibility,uClass.getName()+" new"+uClass.getName(), arguments});
 
   #>>
   { 
-    while(true){
-      try
-      {
-        return remoteFactories.get(getComponentId(component)).create<<=uClass.getName()>>(<<=gClass.getLookup("constructorSignature_caller")>>);
-      }
-      catch(Exception e) 
-      {
-        e.printStackTrace();
-      }  
-    }
+    getInstance();
+    return new <<=uClass.getName()>>Impl(<<=gClass.getLookup("constructorSignature_caller")>>);
   }  
   <<#
   }  
@@ -43,7 +36,8 @@ class UmpleToJava {
     append(realSb,"\n  {0} static {1}({2}String component)",new Object[] {accessibility, uClass.getName()+" new"+uClass.getName(), arguments+argumentscomma});
   #>>
   {
-   return new<<=uClass.getName()>>(<<=gClass.getLookup("constructorSignature_caller")+argumentscomma>>getComponentId(component));
+    getInstance();
+    return new<<=uClass.getName()>>(<<=gClass.getLookup("constructorSignature_caller")+argumentscomma>>getComponentId(component));
   }
     <<#
     }

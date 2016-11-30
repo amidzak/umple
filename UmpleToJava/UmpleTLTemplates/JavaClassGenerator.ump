@@ -101,13 +101,13 @@ if(uClass.getHasProxyPattern())
   {
     if (hasParentInterface == false)
     {
-      append(realSb," implements RemoteI"+uClass.getName().substring(0,uClass.getName().length()-4));
+      append(realSb," implements RemoteI"+uClass.getName().substring(0,uClass.getName().length()-4)+", "+uClass.getName().substring(0,uClass.getName().length()-4));
       hasParentInterface=true;
     }
     else
     {
       if(uClass.getNeedsDefaultInterface())
-        append(realSb,", RemoteI"+uClass.getName().substring(0,uClass.getName().length()-4));
+        append(realSb,", RemoteI"+uClass.getName().substring(0,uClass.getName().length()-4)+", "+uClass.getName().substring(0,uClass.getName().length()-4));
     }
   }
   else if(uClass.getNeedsDefaultInterface())

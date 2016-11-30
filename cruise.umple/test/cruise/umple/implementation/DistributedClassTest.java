@@ -427,7 +427,7 @@ public class DistributedClassTest extends TemplateTest
   @Test
   public void ClassDistributedExtention5()
   {
-	  assertUmpleTemplateFor("java/Class_DistributableRMI6.ump", languagePath + "/Class_DistributableRMI5."+ languagePath +".txt", "Microwave");
+	  assertUmpleTemplateFor("java/Class_DistributableRMI5.ump", languagePath + "/Class_DistributableRMI5."+ languagePath +".txt", "Microwave");
   }
   /*
   @Test

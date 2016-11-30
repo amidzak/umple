@@ -2531,7 +2531,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
         proxyContent+="  public "+remoteInterfaceName+" getRealObject()"+NL+"  {"+NL;
         proxyContent+="    return realObject;"+NL+"  }"+NL;
 
-        remoteInterfaceContent+=remoteImports+"public interface "+remoteInterfaceName+" extends java.rmi.Remote, "+interfaceName+NL+"  {"+NL;
+        remoteInterfaceContent+=remoteImports+"public interface "+remoteInterfaceName+" extends java.rmi.Remote"+NL+"  {"+NL;
         interfaceContent+=remoteImports+"public interface "+interfaceName+parentDefaultInterface+NL+"{"+NL;
       }
       boolean isSerializable=true;
@@ -2620,13 +2620,13 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
             {
               if(!aClass.getIsDistributed() && ( aClass.getHasProxyPattern() || !aClass.getIsDefaultInterfaceRemoteRMI()))
               { interfaceContent+=line.substring(0,endSignature)+");"+NL;
-                if (methodName.equals("setRealSelf")||methodName.equals("getHashCode")||methodName.equals("delete"))
-                  remoteInterfaceContent+=line.substring(0,endSignature)+");"+NL;                 
+                //if (methodName.equals("setRealSelf")||methodName.equals("getHashCode")||methodName.equals("delete"))
+                remoteInterfaceContent+=line.substring(0,endSignature)+");"+NL;                
               }
               else if (isSerializable==true)
-              { interfaceContent+=line.substring(0,endSignature)+") throws RemoteException;"+NL;
-                if (methodName.equals("setRealSelf")||methodName.equals("getHashCode")||methodName.equals("delete"))
-                  remoteInterfaceContent+=line.substring(0,endSignature)+") throws RemoteException;"+NL;  
+              { interfaceContent+=line.substring(0,endSignature)+");"+NL;
+                //if (methodName.equals("setRealSelf")||methodName.equals("getHashCode")||methodName.equals("delete"))
+                remoteInterfaceContent+=line.substring(0,endSignature)+") throws RemoteException;"+NL;  
               }
             }               
             boolean doesThrow=false;
