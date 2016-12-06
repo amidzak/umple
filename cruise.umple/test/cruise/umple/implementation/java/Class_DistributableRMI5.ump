@@ -4,7 +4,7 @@ interface ClientI
 }
 class Client
 {
-  //isA ClientI;
+  isA ClientI;
    id="s";
   //key{id}
   //isA CC;
@@ -36,7 +36,7 @@ class Father
 }
 class Microwave
 {
-  //isA Client;
+  isA Client;
 	distributable;
 	Integer x;
 	String f;

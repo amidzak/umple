@@ -454,10 +454,10 @@ public class DistributedClassTest extends TemplateTest
   {
 	  assertUmpleProxyFor("java/Class_DistributableRMI5.ump", languagePath + "/Class_DistributableRMI5_proxy."+ languagePath +".txt","Microwave", "MicrowaveProxy",true,true);
 
-  }
+  }*/
   @Test
   public void ClassDistributedExtention5_objectFactory()
   {
 	  assertObjectFactory("java/Class_DistributableRMI5.ump", languagePath + "/Class_DistributableRMI5_UmpleObjectFactory."+ languagePath +".txt",languagePath + "/Class_DistributableRMI5_IUmpleObjectFactory."+ languagePath +".txt");
-  } */
+  } 
 }

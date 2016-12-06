@@ -1332,6 +1332,8 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
 */
   private String getExtendClassesNames(UmpleClass uClass)
   {
+      if(uClass.getIsDistributed())
+        return   " extends " + uClass.getName().substring(0,uClass.getName().length()-4);       
       UmpleClass parent = uClass.getExtendsClass();
       if (parent == null)
       {
@@ -2486,7 +2488,6 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       }
     }    
 
-
     if(!aClass.getIsDistributed())
     {
       proxyImplements=" implements "+remoteInterfaceName;
@@ -2521,7 +2522,6 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       }
       if((scopeDepth==0)&&(line.contains("class")))
       { 
-        
         proxyContent+=remoteImports+"import java.io.Serializable;"+NL+defaultNamespace+"public class "+proxyName+extendsProxy+proxyImplements;
         proxyContent+=NL+"{"+NL+"  "+remoteInterfaceName+" realObject;"+NL;
         proxyContent+="  public void setRealObject("+remoteInterfaceName+" aObject)"+NL+"  {"+NL;
@@ -2682,12 +2682,19 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
                 arguments="";
                 callerSignature="";
                 
-              }              
-             
-              proxyContent+=methodType+"("+arguments+lastArgument+"String component)"+NL+"  {\n    realObject = UmpleObjectFactory.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);\n  }\n";
-              proxyContent+=methodType+"("+arguments+lastArgument+"int component)"+NL+"  {"+NL+"    realObject = UmpleObjectFactory.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);"+NL+"  }"+NL;
+              }  
+              String superString="";    
+              if(lines[lineNumber+1].contains("super("))
+                  superString= "  "+lines[lineNumber+1]+NL;
 
-              proxyContent+=methodType+"("+arguments+")"+NL+"  {"+NL+"    realObject = UmpleObjectFactory.getInstance().create"+aClass.getName()+"("+callerSignature+lastArgument+"this);\n  }"+NL+"";
+              if (aClass.getExtendsClass() != null)
+                  if(arguments!=aClass.getExtendsClass().getGeneratedClass().getLookup("constructorSignature"))
+                    proxyContent+="";
+              proxyContent+=methodType+"("+arguments+lastArgument+"String component)"+NL+"  {"+NL+superString+"  if(realObject==null)"+NL+"      realObject = UmpleObjectFactory.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);\n  }\n";
+              proxyContent+=methodType+"("+arguments+lastArgument+"int component)"+NL+"  {"+NL+superString+"  if(realObject==null)"+NL+"      realObject = UmpleObjectFactory.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);"+NL+"  }"+NL;
+
+              proxyContent+=methodType+"("+arguments+")"+NL+"  {"+NL+superString+"  if(realObject==null)"+NL+"      realObject = UmpleObjectFactory.getInstance().create"+aClass.getName()+"("+callerSignature+lastArgument+"this);\n  }"+NL+"";
+
             }
             else
             {

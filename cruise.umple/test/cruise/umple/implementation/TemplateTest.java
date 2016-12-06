@@ -216,7 +216,7 @@ public class TemplateTest
     SampleFileWriter.destroy(pathToInput + "/Client.java");
    
     SampleFileWriter.destroy(pathToInput + "/java/IClient.java");
-    SampleFileWriter.destroy(pathToInput + "/java/distributed/");
+   // SampleFileWriter.destroy(pathToInput + "/java/distributed/");
     SampleFileWriter.destroy(pathToInput + "/java/proxyPattern/");
 
     SampleFileWriter.destroy(pathToInput + "/client.rb");

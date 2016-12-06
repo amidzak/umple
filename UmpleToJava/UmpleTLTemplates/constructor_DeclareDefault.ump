@@ -47,25 +47,7 @@ class UmpleToJava {
   boolean hasBody = false;
 
   append(realSb, "  {");
-  if(uClass.getIsDistributed())
-  {
-    #>>
-    realSelf=proxy;
-    realSelf.setRealObject(this);
-    while(true)
-    {
-      try
-      {  
-        UnicastRemoteObject.exportObject(this,0);
-        break;
-      } 
-      catch (Exception e)
-      {
-        System.err.println("Server Exception: " + e.toString());
-      }
-    } 
-    <<#
-  }
+
   if (!uClass.isRoot() && !"interface".equals(uClass.getExtendsClass().getModifier()))
   {
     appendln(realSb, "");
@@ -329,7 +311,24 @@ class UmpleToJava {
     append(realSb, "\n{0}",GeneratorHelper.doIndent(customConstructorPostfixCode, "    "));
     hasBody = true;
   }
-
+  if(uClass.getIsDistributed())
+  {
+    #>>
+    super.setRealObject(this);
+    while(true)
+    {
+      try
+      {  
+        UnicastRemoteObject.exportObject(this,0);
+        break;
+      } 
+      catch (Exception e)
+      {
+        System.err.println("Server Exception: " + e.toString());
+      }
+    } 
+    <<#
+  }  
   if (hasBody)
   {
     appendln(realSb, "");
