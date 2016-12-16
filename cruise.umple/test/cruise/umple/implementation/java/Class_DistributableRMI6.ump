@@ -1,0 +1,183 @@
+namespace golife;
+class Cell{
+distributable;
+ // position
+ 0..1->* Cell neighbors;
+  Integer x;
+  Integer y;
+  key{x,y}
+  Boolean alive;
+ // status
+ // number of received messages 
+  Integer received1=0;
+  Integer received2=8;
+ // number of alive received messages 
+  Integer aliveneighbors1=0;
+  Integer aliveneighbors2=3;
+ // the number to send out as message. it could also be mixed of two booleans... 
+  boolean generation=true;
+  // alive   message received   
+  queued states{
+  Paused{
+  start->living;
+  }
+  living{entry/{
+  if(alive)
+    System.out.println(String.valueOf(x)+","+String.valueOf(y)+"alive");
+  else
+     System.out.println(String.valueOf(x)+","+String.valueOf(y)+"dead");   
+    if(received1==8){
+      received1=0;
+      next();
+      aliveneighbors1=0;
+      }
+    if(received2==8){
+      received2=0;
+      next(); 
+      aliveneighbors2=0;
+      }
+  }
+  receiveAlive(Boolean gen) /{
+    received2=received2+1;
+    if(gen){
+      aliveneighbors2=aliveneighbors2+1;
+      received2=received2+1;
+      }
+     else{
+      aliveneighbors1=aliveneighbors1+1;
+      received1=received1+1;
+     } 
+
+   }->living;   
+// dead message received
+  receiveDead(Boolean gen) /{
+    
+    if(gen){
+      received2=received2+1;
+      }
+     else{
+     received1=received1+1;
+     } 
+   }->living;
+  }
+  // go to next generation 
+   }
+   void next()
+   {
+
+   // This is just to send one number as message. It could be simpler with mixed variables messages.
+      if(generation && alive){
+        generation=!generation;
+        if(aliveneighbors2<2){
+          alive=!alive;
+      
+        }
+        if(aliveneighbors2>3)
+        { alive=!alive;
+        }
+      }
+
+      if(generation && !alive){
+        generation=!generation;
+        if(aliveneighbors2==3){
+          alive=!alive;
+        }
+      }
+      if(!generation && alive){
+        generation=!generation;
+        if(aliveneighbors1<2){
+          alive=!alive;
+        }
+        if(aliveneighbors1>3)
+        { alive=!alive;
+        }
+      }
+
+      if(!generation && !alive){
+        generation=!generation;
+        if(aliveneighbors1==3){
+          alive=!alive;
+        }
+      }
+      for(int i=0; i<8; i++) {
+        if (alive)
+          getNeighbor(i).receiveAlive(generation);
+        if (!alive)
+          getNeighbor(i).receiveDead(generation);
+          }
+   }
+
+} 
+
+// Grid has number of cells
+class Golife {
+distributable;
+0..1 <@>- * Cell;
+//1 -- * Cell cells;
+  Integer x=3;
+  Integer y=3;
+  lazy Integer tempi;
+  lazy Integer tempj;
+public static void main(String [] args){
+  Golife g=UmpleObjectFactory.newGolife(1);
+}
+  after constructor { 
+    for(int i=0; i<x; i++)
+      for(int j=0; j<y; j++)
+        addCell(UmpleObjectFactory.newCell(i,j,true,i));
+
+// initiation of cells
+
+  for(int i=0; i<x; i++)
+    for(int j=0; j<y; j++){
+
+      for(int k=0; k<8; k++){
+        if(k==0){
+          tempi=i+1;
+          tempj=j;}
+        if(k==1){
+          tempi=i-1;
+          tempj=j;}
+        if(k==2){
+           tempi=i;
+          tempj=j+1;}
+        if(k==3){
+          tempi=i;  
+          tempj=j-1;  
+          }
+        if(k==4){
+          tempi=i+1;
+          tempj=j+1;
+        }
+        if(k==5){
+          tempi=i-1;
+          tempj=j+1;
+        }
+        if(k==6){
+          tempi=i+1;
+          tempj=j-1;
+        }
+        if(k==7){
+          tempi=i-1;
+          tempj=j-1;
+        }   
+        if(tempi==x)
+          tempi=0;
+        if(tempi==-1)
+          tempi=x-1;
+        if(tempj==y)
+          tempj=0;
+        if(tempj==-1)
+          tempj=y-1;                                                    
+        getCell(i*x+j).addNeighbor(getCell(tempi*x+tempj));
+        
+}}
+    for(int i=0; i<x; i++)
+      for(int j=0; j<y; j++)
+        getCell(i*x+j).start();
+
+  }
+
+
+
+}
