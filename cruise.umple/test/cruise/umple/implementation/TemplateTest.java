@@ -248,12 +248,13 @@ public class TemplateTest
     SampleFileWriter.destroy(pathToInput + "/Mentor.java");
 
     // Tear down Client
+    /*
     SampleFileWriter.destroy(pathToInput + "/Client.java");
    
     SampleFileWriter.destroy(pathToInput + "/java/IClient.java");
     SampleFileWriter.destroy(pathToInput + "/java/distributed/");
     SampleFileWriter.destroy(pathToInput + "/java/proxyPattern/");
-
+*/
     SampleFileWriter.destroy(pathToInput + "/client.rb");
     SampleFileWriter.destroy(pathToInput + "/Client.php");
     
