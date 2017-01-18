@@ -42,6 +42,14 @@ class UmpleToJava {
         String isList="";
         String finalParams = "";        
         String finalParamsWithoutTypes = "";
+        /*
+        if(uClass.getHasProxyPattern())
+          if(("".equals(methodType))&&(methodName.equals(uClass.getName())))
+          {
+            methodName+="Impl";
+          }
+        */
+
         if(methodName.equals("main")&&methodType.equals("void")&&methodModifier.contains("public")&&methodModifier.contains("static"))
         {
           String exceptionHandlerPackage = "";
