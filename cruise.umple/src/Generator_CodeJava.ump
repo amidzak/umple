@@ -2686,9 +2686,8 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
               }              
              
               proxyContent+=methodType+"("+arguments+lastArgument+"String component)"+NL+"  {\n    realObject = UmpleObjectFactory.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);\n  }\n";
-              proxyContent+=methodType+"("+arguments+lastArgument+"int component)"+NL+"  {"+NL+"    realObject = UmpleObjectFactory.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);"+NL+"  }"+NL;
 
-              proxyContent+=methodType+"("+arguments+")"+NL+"  {"+NL+"    realObject = UmpleObjectFactory.getInstance().create"+aClass.getName()+"("+callerSignature+lastArgument+"this);\n  }"+NL+"";
+              proxyContent+=methodType+"("+arguments+")"+NL+"  {"+NL+"    realObject = UmpleObjectFactory.getInstance().new"+aClass.getName()+"("+callerSignature+lastArgument+"this);\n  }"+NL+"";
             }
             else
             {

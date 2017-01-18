@@ -164,11 +164,11 @@ for (StateMachine smq : uClass.getStateMachines())
   //------------------------
   // Reference to the proxy
   //------------------------
-  <<=uClass.getName().substring(0,uClass.getName().length()-4)>> realSelf;
+  <<=uClass.getName().substring(0,uClass.getName().length()-4)>> self;
   
-  public void setRealSelf(<<=uClass.getName().substring(0,uClass.getName().length()-4)>> self)
+  public void setSelf(<<=uClass.getName().substring(0,uClass.getName().length()-4)>> proxy)
   {
-    realSelf=self;
+    self=proxy;
   }
 
     <<#}return realSb.toString();
@@ -177,7 +177,7 @@ for (StateMachine smq : uClass.getStateMachines())
   { 
     String self="this";
     if(uClass.getHasProxyPattern())
-      self="realSelf";
+      self="self";
   #>><<@ UmpleToJava.members_AllStatics >><<@ UmpleToJava.members_AllAttributes >><<@ UmpleToJava.members_AllStateMachines >><<@ UmpleToJava.members_AllDoActivities >><<@ UmpleToJava.members_AllAssociations >><<@ UmpleToJava.members_AllHelpers >>
   <<#return realSb.toString();
     }
@@ -216,7 +216,7 @@ for (StateMachine smq : uClass.getStateMachines())
   private String getAssociationCode(StringBuilder realSb, UmpleModel model,UmpleClass uClass, GeneratedClass gClass, JavaGenerator gen, boolean isFirst, boolean isFake)
   { String self="this";
     if(uClass.getHasProxyPattern())
-      self="realSelf";
+      self="self";
     String umpleSourceFile = "";
     Integer baseJavaLine = realSb.toString().split("\\n").length+3;#>><<@ UmpleToJava.association_Get_All >><<@ UmpleToJava.association_Set_All >>
   <<#return realSb.toString();
@@ -236,7 +236,7 @@ for (StateMachine smq : uClass.getStateMachines())
   {
     String self="this";
     if(uClass.getHasProxyPattern())
-      self="realSelf";
+      self="self";
     Integer baseJavaLine = realSb.toString().split("\\n").length+1; #>><<@ UmpleToJava.delete_All >>
     <<# for (StateMachine smq : uClass.getStateMachines())
      {

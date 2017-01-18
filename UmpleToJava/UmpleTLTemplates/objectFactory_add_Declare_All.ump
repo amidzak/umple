@@ -67,14 +67,14 @@ class UmpleToJava {
                 parameters.append(aSingleParameter + ", ");
                 parametersWithoutTypes.append(aMethodParam.getName() + ", ");
               }
-              
-              arguments = parameters.toString().substring(0, parameters.toString().length()-2);
-              argumentscomma="";
-              if(!arguments.equals(""))
-                argumentscomma+=", ";              
-              caller = parametersWithoutTypes.toString().substring(0, parametersWithoutTypes.toString().length()-2);
-              #>><<@ UmpleToJava.rmi_objectFactory_add_methods >><<#
-            }
+            }  
+            arguments = parameters.toString().substring(0, parameters.toString().length()-2);
+            argumentscomma="";
+            if(!arguments.equals(""))
+              argumentscomma+=", ";              
+            caller = parametersWithoutTypes.toString().substring(0, parametersWithoutTypes.toString().length()-2);
+            #>><<@ UmpleToJava.rmi_objectFactory_add_methods >><<#
+            
           }
         }
       }            
