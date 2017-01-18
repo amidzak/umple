@@ -43,12 +43,15 @@ class UmpleToJava {
         String finalParams = "";        
         String finalParamsWithoutTypes = "";
         /*
-        if(uClass.getHasProxyPattern())
-          if(("".equals(methodType))&&(methodName.equals(uClass.getName())))
+        to change the name of the user defined constructors
+        */
+        if(uClass.getHasProxyPattern()){
+          if(("".equals(methodType))&&(uClass.getName().equals(methodName+"Impl")))
           {
             methodName+="Impl";
           }
-        */
+        }
+        
 
         if(methodName.equals("main")&&methodType.equals("void")&&methodModifier.contains("public")&&methodModifier.contains("static"))
         {
