@@ -2,14 +2,14 @@
 class UmpleToJava {
   rmi_objectFactory_add_methods <<!<</*rmi_objectFactory_add_methods*/>><<#
   if(isInterface!=true){
-    append(realSb,"\n  {0} {1}({2}int component{3} proxy)",new Object[] {accessibility, "add"+uClass.getName(), arguments+argumentscomma,", "+uClass.getName()});
+    append(realSb,"\n  {0} {1}({3} proxy)",new Object[] {accessibility, "add"+uClass.getName(), arguments+argumentscomma,", "+uClass.getName()});
 
   #>>
   {
     while(true){
       try
       {
-        return remoteFactories.get(getComponentId(component)).new<<=uClass.getName()>>(<<=gClass.getLookup("constructorSignature_caller")>><<=argumentscomma>>proxy);
+        return remoteFactories.get(getThisNodeId()).new<<=uClass.getName()>>(<<=gClass.getLookup("constructorSignature_caller")>><<=argumentscomma>>proxy);
       }
       catch(Exception e) 
       {
