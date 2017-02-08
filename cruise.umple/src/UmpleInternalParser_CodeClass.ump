@@ -406,13 +406,17 @@ private void setParentClassesDefaultInterface()
 
 private void setParentDefaultInterfaceRecursive(UmpleClass uClass,Boolean isDistributed)
 {
-  uClass.setIsDefaultInterfaceRemoteRMI(isDistributed);
-  uClass.setNeedsDefaultInterface(true);
-  if(uClass.getExtendsClass()!=null) 
+  if(!(uClass.getIsAbstract())&&!uClass.isImmutable()&&!uClass.getIsSingleton())
   {
-    if(!uClass.getExtendsClass().getNeedsDefaultInterface())
+
+    uClass.setIsDefaultInterfaceRemoteRMI(isDistributed);
+    uClass.setNeedsDefaultInterface(true);
+    if(uClass.getExtendsClass()!=null) 
     {
-      setParentDefaultInterfaceRecursive(uClass.getExtendsClass(),isDistributed);
+      if(!uClass.getExtendsClass().getNeedsDefaultInterface())
+      {
+        setParentDefaultInterfaceRecursive(uClass.getExtendsClass(),isDistributed);
+      }
     }
   }
 }
@@ -426,7 +430,7 @@ private void analyzeDistributedClasses()
   { 
     for (UmpleClass uClass:  model.getUmpleClasses())
     { 
-      if (model.getDistributeForced()&&!(uClass.getIsAbstract())&&!uClass.isImmutable())
+      if (model.getDistributeForced()&&!(uClass.getIsAbstract())&&!uClass.isImmutable()&&!uClass.getIsSingleton())
       { model.setDistributed(true);
         uClass.setDistributeTechnology(model.getDistributeTechnology());
         uClass.setIsDistributed(true);
@@ -463,7 +467,7 @@ private Boolean checkIsDistributed(UmpleClass uClass)
   int distributedParents=0; 
   for (UmpleInterface parentInterface: uClass.getParentInterface())
   { 
-    if(checkIsDistributed(parentInterface)&&!(uClass.getIsAbstract())&&!uClass.isImmutable())
+    if(checkIsDistributed(parentInterface)&&!(uClass.getIsAbstract())&&!uClass.isImmutable()&&!uClass.getIsSingleton())
     {  
       distributedParents+=1;
       uClass.setDistributeTechnology(parentInterface.getDistributeTechnology());
@@ -486,7 +490,7 @@ private Boolean checkIsDistributed(UmpleClass uClass)
 /*
 First it is checked if the class is distributable itself. Then the parent classes
 */
-  if(uClass.getIsDistributable()&&!(uClass.getIsAbstract())&&!uClass.isImmutable())
+  if(uClass.getIsDistributable()&&!(uClass.getIsAbstract())&&!uClass.isImmutable()&&!uClass.getIsSingleton())
   {
     uClass.setHasProxyPattern(true);
     uClass.setNeedsDefaultInterface(true);
@@ -494,9 +498,6 @@ First it is checked if the class is distributable itself. Then the parent classe
     model.setDistributed(true);
     return true;
   }
-
-
-
 
   if(uClass.getExtendsClass()!=null) 
   {
