@@ -1338,7 +1338,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
           return "";
       }
       else{
-        if(parent.getHasProxyPattern())
+        if(parent.getHasProxyPattern()&&uClass.getHasProxyPattern())
           return   " extends " + parent.getName()+"Impl"; 
         return   " extends " + parent.getName();   
       }
@@ -2465,11 +2465,19 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     /* if distributed class has a distributable interface parent and does not need parent interface the remote interface needs to know the name of it
     */    
 
-    if(aClass.getExtendsClass()!=null&&!aClass.getExtendsClass().getIsAbstract()){
+    if(aClass.getExtendsClass()!=null){
       extendsProxy=" extends "+aClass.getExtendsClass().getName();
+      /*
       if(!aClass.getExtendsClass().getHasProxyPattern())
-         extendsProxy+="Proxy";
-      else if(aClass.getExtendsClass().getNeedsDefaultInterface()){
+      {
+        if(! aClass.getHasProxyPattern()&&aClass.getNeedsDefaultInterface())
+          extendsProxy=aClass.getName();
+        else{
+          extendsProxy+="Proxy";
+          }
+      }
+      */
+      if(aClass.getExtendsClass().getNeedsDefaultInterface()&&aClass.getExtendsClass().getHasProxyPattern()){
         parentDefaultInterface=", I"+aClass.getExtendsClass().getName()+"Impl";
       } 
     }
@@ -2506,11 +2514,13 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       defaultNamespace="import "+getModel().getDefaultNamespace()+".UmpleRuntime;"+NL;
     }
     String remoteImports="";
+   /*
     if(!aClass.getHasProxyPattern()&&aClass.getNeedsDefaultInterface())
     {
       remoteImports="import java.rmi.RemoteException;"+NL;
       proxyName=aClass.getName()+"Proxy";
     }
+    */
     for(int lineNumber=0; lineNumber<lines.length;lineNumber+=1)
     {
       String line=lines[lineNumber];
@@ -2539,6 +2549,10 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       String lineWOSpace= line.replace(" ", "");
       boolean isMethod=false;
       boolean isNonStatic=true;
+      if (line.contains(proxyName+"("))
+      {
+        isMethod=true;
+      }
       if (scopeDepth==1)
       {
         int startSignature=line.indexOf("(");
@@ -2549,6 +2563,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
           {
             isMethod=true;
           }
+       
           if (tokensInMethod[i].equals("abstract"))
           {
             isMethod=false;
@@ -2669,7 +2684,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
               }
             }
           }   
-          else if (!methodName.equals("equals"))
+          else if (methodName.equals(realClassName)||methodType.contains(realClassName))
           {
             methodType= "  public "+proxyName;
             if(aClass.getIsDistributed())
@@ -2739,7 +2754,8 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     }
 */
     // write generated proxy code
-    if (aClass.getHasProxyPattern()||aClass.getNeedsDefaultInterface())
+    //if (aClass.getHasProxyPattern()||aClass.getNeedsDefaultInterface())
+    if (aClass.getHasProxyPattern())
     {
       filename = path + File.separator + proxyName + ".java";
       File file = new File(path);
@@ -2758,7 +2774,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       {
         bw.close();
       } 
-  }
+    }
 
 
 // writing the generated code for the remote interface
