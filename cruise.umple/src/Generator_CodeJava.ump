@@ -1332,15 +1332,21 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
 */
   private String getExtendClassesNames(UmpleClass uClass)
   {
-      UmpleClass parent = uClass.getExtendsClass();
-      if(uClass.getIsDistributed())
-        return   " extends " + uClass.getName(); 
+      if(uClass.getNeedsDefaultInterface())
+      {
+        if(uClass.getIsDistributed())
+          return   " extends " + uClass.getName().substring(0, uClass.getName().length()-4);
+        else if(uClass.getHasProxyPattern())
+          return   " extends " + uClass.getName(); 
+        else
+          return   " extends " + uClass.getName()+"Proxy"; 
+      }
+      UmpleClass parent = uClass.getExtendsClass();  
       if (parent == null)
       {
           return "";
       }
       else{
-
         return   " extends " + parent.getName();   
       }
   }
@@ -1349,8 +1355,9 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
   {
       String implementedInterfaces = "";
 
-      if (uClass.hasParentInterface() == false || uClass.getIsDistributed()){
-          return "";
+      if (uClass.hasParentInterface() == false || uClass.getIsDistributed())
+      {
+        return "";
       }
       else
       {
@@ -1359,8 +1366,8 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
               implementedInterfaces += uInterface.getName() + "," ;
         }            
         implementedInterfaces = implementedInterfaces.substring(0, implementedInterfaces.length()-1); 
+        return " implements " + implementedInterfaces;
       }  
-      return " implements " + implementedInterfaces;
   }
 
   public String translate(String keyName, Attribute av)
@@ -2473,7 +2480,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       if(! aClass.getHasProxyPattern()&&aClass.getNeedsDefaultInterface())
       {
           extendsProxy=" extends "+aClass.getName();
-          extendsRemoteProxy=" extends "+aClass.getName()+"Remote";
+          //extendsRemoteProxy=" extends "+aClass.getName()+"Remote";
       }
       
       
@@ -2508,6 +2515,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     }
     Integer scopeDepth=0;// if it is 1 means we are in the main class. If depth more than 1 it means we are in an inner class.
     String[] lines = classContent.split("\n|"+System.getProperty("line.separator"));
+    classContent="";
     /*
     ** Loop going through all of the class file line by line
     */
@@ -2538,7 +2546,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       }
       if((scopeDepth==0)&&(line.contains("class "+realClassName)))
       { 
-        remoteContent=proxyContent+NL+"public class"+ remoteName+extendsRemoteProxy+" implements "+remoteInterfaceName+NL+"{";
+        remoteContent=proxyContent+NL+"public class " + remoteName+extendsRemoteProxy+" implements "+remoteInterfaceName+NL+"{";
         proxyContent+=remoteImports+"import java.io.Serializable;"+NL+defaultNamespace+"public class "+proxyName+extendsProxy+proxyImplements;
 
         proxyContent+=NL+"{"+NL+"  "+remoteInterfaceName+" realObject;"+NL;
@@ -2647,12 +2655,12 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
               if(!aClass.getIsDistributed() && ( aClass.getHasProxyPattern() || !aClass.getIsDefaultInterfaceRemoteRMI()))
               {
                 if (parentInterface==null||methodName.equals("setRealSelf")||methodName.equals("getHashCode")||methodName.equals("delete"))
-                  remoteInterfaceContent+=methodType.replaceAll(methodName,methodName+"Impl\\(")+arguments+"\\);"+NL;                 
+                  remoteInterfaceContent+=methodType+"("+arguments+");"+NL;                 
               }
               else if (isSerializable==true)
               {
                 if (parentInterface==null||methodName.equals("setRealSelf")||methodName.equals("getHashCode")||methodName.equals("delete"))
-                  remoteInterfaceContent+=methodType.replaceAll(methodName,methodName+"Impl\\(")+arguments+"\\) throws RemoteException;"+NL;  
+                  remoteInterfaceContent+=methodType+"("+arguments+") throws RemoteException;"+NL;  
               }
             }               
             boolean doesThrow=false;
@@ -2676,27 +2684,27 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
             {
               if(doesThrow && isNonStatic)
               {
-                proxyContent+=methodDeclarationLineWithThrows+"    try{"+NL+"      "+returnString+"realObject."+methodName+"Impl"+"("+callerSignature+");"+NL+breakString+"      }"+NL+"    finally {}"+NL+"  }"+NL;
+                proxyContent+=methodDeclarationLineWithThrows+"    try{"+NL+"      "+returnString+"realObject."+methodName+"("+callerSignature+");"+NL+breakString+"      }"+NL+"    finally {}"+NL+"  }"+NL;
                 remoteContent+=methodDeclarationLineWithThrows+"    try{"+NL+"      "+returnString+"realObject."+methodName+"Impl"+"("+callerSignature+");"+NL+breakString+"      }"+NL+"    finally {}"+NL+"  }"+NL;
               }
 
               if(!doesThrow && isNonStatic)
               {
-                proxyContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+"realObject."+methodName+"Impl"+"("+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
+                proxyContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+"realObject."+methodName+"("+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
                 remoteContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+"realObject."+methodName+"Impl"+"("+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
               }
               if(doesThrow && !isNonStatic)
               {
                 proxyContent+=methodDeclarationLineWithThrows+"    try{"+NL+"      "+returnString+realClassName+"."+methodName+"Impl"+"("+callerSignature+");"+NL+"      }"+NL+"    finally {}"+NL+"  }"+NL;
-                remoteContent+=methodDeclarationLineWithThrows+"    try{"+NL+"      "+returnString+realClassName+"."+methodName+"Impl"+"("+callerSignature+");"+NL+"      }"+NL+"    finally {}"+NL+"  }"+NL;
               }
 
               if(!doesThrow && !isNonStatic)
               {
                 proxyContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+realClassName+"."+methodName+"Impl"+"("+callerSignature+");"+NL+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
-                remoteContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+realClassName+"."+methodName+"Impl"+"("+callerSignature+");"+NL+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
+                
               }
             }
+              classContent+=  methodType.replaceAll(methodName,methodName+"Impl")+line.substring(startSignature)+NL;
           }   
           else if (methodName.equals(realClassName)||methodType.contains(realClassName))
           {
@@ -2722,14 +2730,17 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
             }
             else
             {
-                            proxyContent+="  public "+proxyName+"("+arguments+")"+NL+"  {}"+NL;
+                    proxyContent+="  public "+proxyName+"("+arguments+")"+NL+"  {}"+NL;
             }
-          } 
-          classContent+=  methodType.replaceAll(methodName,methodName+"Impl")+line.substring(startSignature+1)+NL;  
+            classContent+=line+NL;
+          }  
         }
         else
-          classContent+=line+NL;
+          classContent+=line+NL;       
       }
+      else{
+          classContent+=line+NL;
+          }
        
       scopeDepth += line.length() - line.replace("{", "").length(); // counting the number of "{" in the line and increasing the scopeDepth
       scopeDepth -= line.length() - line.replace("}", "").length(); // counting the number of "}" in the line and increasing the scopeDepth      
