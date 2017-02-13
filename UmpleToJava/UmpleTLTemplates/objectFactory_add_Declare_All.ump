@@ -28,6 +28,7 @@ class UmpleToJava {
           break;
         }
       }
+      caller=gClass.getLookup("constructorSignature_caller");
     #>><<@ UmpleToJava.objectFactory_add_DeclareDefault >><<#
       if (isOneToOne)
       {

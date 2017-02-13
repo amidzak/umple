@@ -260,13 +260,14 @@ public class TemplateTest
     SampleFileWriter.destroy(pathToInput + "/java/ClientImpl.java");
     SampleFileWriter.destroy(pathToInput + "/java/UmpleRuntime.java");
     SampleFileWriter.destroy(pathToInput + "/java/IUmpleRuntime.java");
-    SampleFileWriter.destroy(pathToInput + "/java/IUmpleObjectFactory.java");
+    //SampleFileWriter.destroy(pathToInput + "/java/IUmpleObjectFactory.java");
     
     SampleFileWriter.destroy(pathToInput + "/java/distributed/");
     SampleFileWriter.destroy(pathToInput + "/java/proxyPattern/");
 
     SampleFileWriter.destroy(pathToInput + "/client.rb");
     SampleFileWriter.destroy(pathToInput + "/Client.php");
+    SampleFileWriter.destroy(pathToInput + "/ClientRemote.php");
     
    // destroying the object factory
   }
