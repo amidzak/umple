@@ -99,12 +99,12 @@ boolean hasParentInterface=uClass.hasParentInterface();
 if(uClass.getNeedsDefaultInterface())
 {
   if (hasParentInterface == false){
-        append(realSb," implements I"+uClass.getName()+"Impl");
+        append(realSb," implements java.io.Serializable , I"+uClass.getName()+"Impl");
         hasParentInterface=true;
       }
       else{
         if(uClass.getNeedsDefaultInterface())
-          append(realSb,", I"+uClass.getName()+"Impl");
+          append(realSb," ,java.io.Serializable, I"+uClass.getName()+"Impl");
       } 
 }
 

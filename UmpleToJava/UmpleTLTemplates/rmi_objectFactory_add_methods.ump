@@ -44,21 +44,21 @@ class UmpleToJava {
 #>>
   {
   <<=uClass.getName()>>Remote remoteObject = new <<=uClass.getName()>>Remote();
-  <<=uClass.getName()>> object= new <<=uClass.getName()>>(<<=caller>>);
-    remoteObject.setRealObject(object);
     while(true)
     {
       try
       {  
-        UnicastRemoteObject.exportObject(object,0);
+        UnicastRemoteObject.exportObject(remoteObject,0);
         break;
       } 
       catch (Exception e)
       {
         System.err.println("Server Exception: " + e.toString());
       }
-    }
+    }  
+  <<=uClass.getName()>> object= new <<=uClass.getName()>>(<<=caller>>);
   object.setRealObject(remoteObject);
+  remoteObject.setRealObject(object);
   listOf<<=uClass.getName()>>.add(remoteObject);
   return object; 
   }

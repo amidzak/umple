@@ -132,8 +132,13 @@ public class UmpleRuntime implements IUmpleRuntime
     }
   }
   public static UmpleComponent getComponent(String RuntimeComponentName)
-  {
-      return components.get(RuntimeComponentName);
+  { 
+    getInstance();
+    UmpleComponent aComponent=components.get(RuntimeComponentName);
+    if (aComponent!=null)
+      return aComponent;
+    else
+      return components.get("main");  
   }
 // ******************************** Factory
     public static UmpleRuntime theInstance = null;
@@ -174,9 +179,9 @@ public class UmpleRuntime implements IUmpleRuntime
     {
      UmpleNode an1= new UmpleNode(0);
      an1.setPort(2024);
-     UmpleComponent c=new UmpleComponent("0",an1);
+     UmpleComponent c=new UmpleComponent("main",an1);
      nodes.add(an1);
-     components.put("0",c);
+     components.put("main",c);
      
      UmpleNode an2= new UmpleNode(1);
      an2.setPort(2028);
@@ -263,10 +268,10 @@ public class UmpleRuntime implements IUmpleRuntime
       // MEMBER VARIABLES
       //------------------------
       private int id;
-      private String ip;
-      private String url;
-      private int port;
-      private int rmiRegistry;
+      private String ip="localhost";
+      private String url="localhost";
+      private int port=1098;
+      private int rmiRegistry=1098;
       //------------------------
       // CONSTRUCTOR
       //------------------------
@@ -355,7 +360,7 @@ public class UmpleRuntime implements IUmpleRuntime
       //------------------------
 
       //UmpleComponent Attributes
-      private int number;
+      private int number=0;
       private String name;
       private UmpleNode node;
       //------------------------

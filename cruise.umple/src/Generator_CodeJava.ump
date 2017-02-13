@@ -2418,10 +2418,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     if(aClass.getIsDistributed()==true)
     { if(aClass.getDistributeTechnology().equals("RMI"))
       {
-        genClass.addMultiLookup("import", "java.rmi.registry.Registry");
-        genClass.addMultiLookup("import", "java.rmi.registry.LocateRegistry");
-        genClass.addMultiLookup("import", "java.rmi.RemoteException");
-        genClass.addMultiLookup("import", "java.rmi.server.UnicastRemoteObject");
+        genClass.addMultiLookup("import", "java.io.Serializable");
       }
     }
   }
@@ -2537,7 +2534,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       }
       if((scopeDepth==0)&&(line.contains("class "+realClassName)))
       { 
-        remoteContent+=NL+"public class " + remoteName+extendsRemoteProxy+" implements "+remoteInterfaceName+NL+"{";
+        remoteContent+=NL+"import java.rmi.registry.Registry;"+NL+"import java.rmi.registry.LocateRegistry;"+NL+"import java.rmi.server.UnicastRemoteObject;"+NL+"public class " + remoteName+extendsRemoteProxy+" implements "+remoteInterfaceName+NL+"{";
         //proxyContent+=remoteImports+"import java.io.Serializable;"+NL+defaultNamespace+"public class "+proxyName+extendsProxy+proxyImplements+NL+"{"+;
 
         proxyContent+=NL+"  "+remoteInterfaceName+" realObject=this;"+NL;
