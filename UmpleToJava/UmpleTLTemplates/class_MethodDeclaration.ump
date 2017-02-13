@@ -45,7 +45,8 @@ class UmpleToJava {
         /*
         to change the name of the user defined constructors
         */
-        if(uClass.getHasProxyPattern()){
+        if(uClass.getHasProxyPattern()||(uClass.getNeedsDefaultInterface()&&model.getDistributePattern()>0))
+        {
           if(("".equals(methodType))&&(uClass.getName().equals(methodName+"Impl")))
           {
             methodName+="Impl";

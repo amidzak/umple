@@ -1,6 +1,10 @@
-
+use rmi_objectFactory_add_methods1.ump;
 class UmpleToJava {
   rmi_objectFactory_add_methods <<!<</*rmi_objectFactory_add_methods*/>><<#
+  if (model.getDistributePattern()==1){
+    #>><<@ UmpleToJava.rmi_objectFactory_add_methods1 >><<#
+  }
+  else{
   if(isInterface!=true){
     append(realSb,"\n  {0} {1}({2})",new Object[] {accessibility, "add"+uClass.getName(), arguments});
 
@@ -63,5 +67,7 @@ class UmpleToJava {
   return object; 
   }
   <<#
-    }#>>!>>
+    }
+  }  
+    #>>!>>
 }
