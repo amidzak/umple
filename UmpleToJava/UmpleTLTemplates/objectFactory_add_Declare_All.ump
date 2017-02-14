@@ -20,6 +20,9 @@ class UmpleToJava {
       String accessibility = "public I"+uClass.getName()+"Impl";
       if(model.getDistributePattern()==2)
         accessibility = "public "+uClass.getName();
+      String webMethod="";
+      //if(model.getDistributeTechnology().equals("WS"))
+        //webMethod="@WebMethod"+NL; 
       for (AssociationVariable av : uClass.getAssociationVariables()) 
       {
         relatedAssociation = av.getRelatedAssociation();

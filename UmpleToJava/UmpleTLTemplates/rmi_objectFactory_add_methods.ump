@@ -40,7 +40,7 @@ class UmpleToJava {
   }
     <<#
     }
-  append(realSb,"\n  {0} {1}({2})",new Object[] {accessibility, "new"+uClass.getName(), arguments});
+  append(realSb,"\n  {0}{1} {2}({3})",new Object[] {webMethod,accessibility, "new"+uClass.getName(), arguments});
   if(isInterface==true){
   #>>throws RemoteException;<<#
   }

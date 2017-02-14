@@ -2418,15 +2418,23 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     }
   
     if(aClass.getIsDistributed()==true)
-    { if(aClass.getDistributeTechnology().equals("RMI"))
-      {
+    { 
         if(getModel().getDistributePattern()==0)
           genClass.addMultiLookup("import", "java.io.Serializable");
         else if (getModel().getDistributePattern()==1)
         {
-          genClass.addMultiLookup("import", "java.rmi.RemoteException");
-          genClass.addMultiLookup("import", "java.rmi.server.UnicastRemoteObject");
-        }  
+          if(getModel().getDistributeTechnology()=="RMI"||getModel().getDistributeTechnology()=="WS")
+          {
+            genClass.addMultiLookup("import", "java.rmi.RemoteException");
+            genClass.addMultiLookup("import", "java.rmi.server.UnicastRemoteObject");
+          }
+          else if(getModel().getDistributeTechnology()=="WS")
+          {
+            genClass.addMultiLookup("import", "java.rmi.RemoteException");
+            genClass.addMultiLookup("import", "java.rmi.server.UnicastRemoteObject");
+            genClass.addMultiLookup("import", "java.rmi.server.UnicastRemoteObject");
+            genClass.addMultiLookup("import", "java.rmi.server.UnicastRemoteObject");
+          } 
       }
     }
   }
