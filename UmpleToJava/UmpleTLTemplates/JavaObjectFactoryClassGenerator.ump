@@ -100,7 +100,7 @@ import <<=packageName>>;
   if(model.getDistributeTechnology().equals("WS"))
   {
 #>>
-@WebService(endpointInterface = \u0022<<=defaultNamespace>>IUmpleRuntime\u0022)
+@WebService(endpointInterface = "<<#append(realSb,defaultNamespace);#>>IUmpleRuntime")
 <<#
   }
   #>>
@@ -288,7 +288,7 @@ public class UmpleRuntime implements IUmpleRuntime
       readComponentsFile();
       int numberOfNodes= nodes.size();
       System.out.println(getThisNodeId());
-      Endpoint.publish("http://127.0.0.1:9876/hw",this);
+      Endpoint.publish(nodes.get(getThisNodeId()).getUrl()+":"+String.valueOf(nodes.get(getThisNodeId()).getPort())+"/hw",this);
 
       for(int node=0;node<numberOfNodes;node=node+1)
       {
@@ -303,8 +303,8 @@ public class UmpleRuntime implements IUmpleRuntime
             try 
             {
               URL url = new URL(nodes.get(node).getUrl()+String.valueOf(nodes.get(node).getPort())+"/hw?wsdl");
-              String packageName=\u0022<<=qname>>\u0022;
-              QName qname = new QName(packageName,
+             
+              QName qname = new QName("<<#append(realSb,qname);#>>",
                   "UmpleRuntimeService");
               Service service = Service.create(url, qname);
               IUmpleRuntime proxy = service.getPort(IUmpleRuntime.class);
@@ -341,7 +341,7 @@ public class UmpleRuntime implements IUmpleRuntime
       //------------------------
       private int id;
       private String ip="localhost";
-      private String url="localhost";
+      private String url="http://127.0.0.1";
       private int port=1098;
       //------------------------
       // CONSTRUCTOR
