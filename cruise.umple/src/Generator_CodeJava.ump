@@ -2470,6 +2470,8 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     {
       methodPostfix="Impl";
     }
+    if(getModel().getDistributePattern()==2)
+      remoteInterfaceName=aClass.getName();
     /* if distributed class has a distributable interface parent and does not need parent interface the remote interface needs to know the name of it
     */    
 
@@ -2496,10 +2498,10 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       proxyImplements=" implements java.io.Serializable";
       for(UmpleInterface interfaceParent: aClass.getParentInterface())
       { 
-        proxyImplements+=", "+parentInterface.getName();
+        proxyImplements+=", "+interfaceParent.getName();
         if(interfaceParent.getIsDistributable()){
           parentInterface=interfaceParent;
-          parentDefaultInterface+=" ,"+parentInterface.getName();
+          parentDefaultInterface+=" ,"+interfaceParent.getName();
         }
       }
     }    
@@ -2854,8 +2856,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
 
 
 // writing the generated code for the remote interface
-    if(getModel().getDistributePattern()==3)
-      remoteInterfaceName=aClass.getName();
+
     if ((aClass.getIsDistributed()|| aClass.getNeedsDefaultInterface())&& aClass.getDistributeTechnology().equals("RMI"))
     {
       filename = path + File.separator + remoteInterfaceName + ".java";
