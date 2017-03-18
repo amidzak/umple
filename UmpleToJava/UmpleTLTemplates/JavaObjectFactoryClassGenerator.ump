@@ -160,7 +160,7 @@ public class UmpleRuntime implements IUmpleRuntime
     if (aComponent!=null)
       return aComponent;
     else
-      return components.get("main");  
+      return null;  
   }
 // ******************************** Factory
     public static UmpleRuntime theInstance = null;
@@ -194,7 +194,10 @@ public class UmpleRuntime implements IUmpleRuntime
     }
     public int getNodeId(UmpleComponent umpleComponent)
     {
-      return umpleComponent.getNode().getId();
+      if (umpleComponent==null)
+        return getThisNodeId();
+      else  
+        return umpleComponent.getNode().getId();
     }
 
     private void readComponentsFile()

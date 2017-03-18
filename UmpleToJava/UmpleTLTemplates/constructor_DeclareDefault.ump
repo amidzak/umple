@@ -25,23 +25,23 @@ class UmpleToJava {
 
   String customConstructorPrefixCode = GeneratorHelper.toCode(uClass.getApplicableCodeInjections("before","constructor"));
   String customConstructorPostfixCode = GeneratorHelper.toCode(uClass.getApplicableCodeInjections("after","constructor"));
-  String proxySignature="";
-/*  
+  String distributedRuntimeCall="";
+  
   if(uClass.getIsDistributed())
   {    
-    if(!gClass.getLookup("constructorSignature").equals(""))
+    if(!gClass.getLookup("constructorSignature_caller").equals(""))
     {
-      proxySignature=", "+uClass.getName().substring(0,uClass.getName().length()-4)+" proxy";
+      distributedRuntimeCall=gClass.getLookup("constructorSignature_caller")+", this";
     }
     else
     {
-      proxySignature=uClass.getName().substring(0,uClass.getName().length()-4)+" proxy";
+      distributedRuntimeCall="this";
     }  
   } 
-*/
+
   
   String accessibility = uClass.getIsSingleton() ? "private" : "public";
-  append(realSb,"\n  {0} {1}({2}{3})",new Object[] {accessibility, uClass.getName(), gClass.getLookup("constructorSignature"),proxySignature});
+  append(realSb,"\n  {0} {1}({2})",new Object[] {accessibility, uClass.getName(), gClass.getLookup("constructorSignature")});
 
   String extraNote = null;
   
@@ -57,7 +57,12 @@ class UmpleToJava {
     append(realSb, "    super({0});", gClass.getParentClass().getLookup("constructorSignature_caller"));
     hasBody = true;
   }
-  
+  if(uClass.getIsDistributed()&&model.getDistributePattern()==0)
+  {
+    appendln(realSb, "");
+    append(realSb, "UmpleRuntime.getInstance().add{0}({1});",new Object[] {uClass.getName() ,distributedRuntimeCall});
+    hasBody = true;
+  }
   if (customConstructorPrefixCode != null)
   {
     addUncaughtExceptionVariables(realSb.toString().split("\\n").length,customConstructorPrefixCode,uClass.getName());

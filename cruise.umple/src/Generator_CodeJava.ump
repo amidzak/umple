@@ -2666,7 +2666,8 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
               }
             }
           }
-          callerSignature+=arguments.substring(arguments.replaceAll("\\s+$", "").lastIndexOf(" ")+1,arguments.length());
+          callerSignature+=arguments.substring(arguments.replaceAll("\\s+$", "").lastIndexOf(" ")+1,arguments.length()); 
+
           if ((!methodName.equals("equals"))&&(!methodName.equals(realClassName)))
           {
             if(isNonStatic)
@@ -2750,9 +2751,15 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
                 callerSignature="";
                 
               }              
-             
+              String nextLineSuper="";
+              if (!aClass.isRoot() && !"interface".equals(aClass.getExtendsClass().getModifier()))
+                if(aClass.getGeneratedClass().getLookup("constructorSignature_caller").equals(callerSignature))
+                  nextLineSuper="    super("+aClass.getGeneratedClass().getParentClass().getLookup("constructorSignature_caller")+");";
+                else
+                  nextLineSuper="    super("+callerSignature+");"; 
+
              if(getModel().getDistributePattern()==0){
-              proxyContent+="  public "+proxyName+"("+arguments+lastArgument+"UmpleRuntime.UmpleComponent component)"+NL+"  {"+NL+"    this("+callerSignature+");"+NL+"    realObject = UmpleRuntime.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component);"+NL+"  }"+NL;
+              proxyContent+="  public "+proxyName+"("+arguments+lastArgument+"UmpleRuntime.UmpleComponent component)"+NL+"  {"+nextLineSuper+NL+"    realObject = UmpleRuntime.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component);"+NL+"  }"+NL;
               }
               if(getModel().getDistributePattern()==1){
                 proxyContent+="  public "+proxyName+"("+arguments+lastArgument+"UmpleRuntime.UmpleComponent component)"+NL+"  {"+NL+"    realObject = UmpleRuntime.getInstance().add"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);"+NL+"  }"+NL;
