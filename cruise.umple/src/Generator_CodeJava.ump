@@ -2568,7 +2568,10 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
         
         proxyPrecode+=remoteImports+"import java.io.Serializable;"+NL+defaultNamespace+"public class "+proxyName+extendsProxy+proxyImplements+NL+"{";
 
-          proxyContent+=NL+"  "+remoteInterfaceName+" realObject;"+NL;
+          proxyContent+=NL+"  "+remoteInterfaceName+" realObject";
+          if(getModel().getDistributePattern()==0)
+            proxyContent+="=this";
+          proxyContent+=";"+NL;
         proxyContent+="  public void setRealObject("+remoteInterfaceName+" aObject)"+NL+"  {"+NL;
         proxyContent+="    realObject=aObject;"+NL+"  }"+NL;
         proxyContent+="  public "+remoteInterfaceName+" getRealObject()"+NL+"  {"+NL;
