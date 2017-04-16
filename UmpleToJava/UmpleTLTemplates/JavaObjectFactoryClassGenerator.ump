@@ -159,10 +159,10 @@ public class UmpleRuntime implements IUmpleRuntime
       }
     }
   }
-  public static UmpleComponent getComponent(String RuntimeComponentName)
+  public static UmpleComponent getComponent(String runtimeComponentName)
   { 
     getInstance();
-    UmpleComponent aComponent=components.get(RuntimeComponentName);
+    UmpleComponent aComponent=components.get(runtimeComponentName);
     if (aComponent!=null)
       return aComponent;
     else
