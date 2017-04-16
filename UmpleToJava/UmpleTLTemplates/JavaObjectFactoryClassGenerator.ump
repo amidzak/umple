@@ -46,18 +46,19 @@ class JavaObjectFactoryClassGenerator {
     packageSet.add("java.rmi.server.UnicastRemoteObject");
   }
   if(model.getDistributeTechnology().equals("WS"))
-  {
-    packageSet.add("javax.jws.WebMethod");
+  { 
     packageSet.add("javax.jws.WebService");
     packageSet.add("javax.jws.soap.SOAPBinding");
     packageSet.add("javax.jws.soap.SOAPBinding.Style");
-    packageSet.add("javax.xml.ws.Endpoint");
     packageSet.add("java.net.URL");
     packageSet.add("javax.xml.namespace.QName");
     packageSet.add("javax.xml.ws.Service");
   }  
+  packageSet.add("javax.jws.WebMethod");
+  packageSet.add("javax.xml.ws.Endpoint");
+  
   packageSet.add("java.io.FileInputStream");
-  packageSet.add("java.io.InputStreamReader;");
+  packageSet.add("java.io.InputStreamReader");
   packageSet.add("java.io.BufferedReader");
   packageSet.add("java.io.FileReader");
   packageSet.add("java.io.IOException");
@@ -249,8 +250,8 @@ public class UmpleRuntime implements IUmpleRuntime
             Boolean condition3=matcher3.find();
             while (condition1||condition2||condition3) 
             { 
-              url="";
-              ip="";
+              url="http://localhost";
+              ip="localhost";
               name="";
               port=1111;
               part1="";
@@ -443,7 +444,7 @@ public class UmpleRuntime implements IUmpleRuntime
       //------------------------
       private int id;
       private String ip="localhost";
-      private String url="http://127.0.0.1";
+      private String url="http://localhost";
       private int port=1098;
       //------------------------
       // CONSTRUCTOR
