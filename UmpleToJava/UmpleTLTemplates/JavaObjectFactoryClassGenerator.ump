@@ -205,7 +205,7 @@ public class UmpleRuntime implements IUmpleRuntime
 
     private void readComponentsFile()
     {
-      String input="{id=0; port=1099}";
+      String input="{id=0; port=1099; {component1}}{id=1; port=1700; {component2}}";
       try (BufferedReader br = new BufferedReader(new FileReader(fileAddress))) {
         String line;
         while ((line = br.readLine()) != null) {
