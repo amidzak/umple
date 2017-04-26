@@ -31,7 +31,7 @@ class UmpleToJava {
           <<=uClass.getName()>> proxyObject = remoteFactories.get(getNodeId(component)).create<<=uClass.getName()>>(<<=caller>>);
           object.remoteUrl=proxyObject.remoteUrl;
           object.remotePort=proxyObject.remotePort;
-          object.remoteHashCode=proxyObject.remoteHashCode;
+          object.objectId=proxyObject.objectId;
           return proxyObject.realObject;
           <<#}
           #>>
@@ -64,7 +64,7 @@ class UmpleToJava {
         #>>
         object.remoteUrl=nodes.get(getThisNodeId()).getUrl();
         object.remotePort=String.valueOf(nodes.get(getThisNodeId()).getPort());
-        object.remoteId=listOf<<=uClass.getName()>>.indexOf(object);
+        object.objectId=listOf<<=uClass.getName()>>.indexOf(object);
         Endpoint.publish(object.remoteUrl+":"+object.remotePort+"/<<=uClass.getName()>>Remote",remoteObject);
         <<#}#>>
         break;

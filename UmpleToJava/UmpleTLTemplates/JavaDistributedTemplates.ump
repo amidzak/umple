@@ -57,14 +57,14 @@ class JavaDistributedTemplates {
     }
  !>>
      emit getremoteSingletonCode(String remoteName, String packageName,String interfaceName)(remoteSingleton);
- remoteSingleton<<!
+ remoteSingleton <<!
   private static <<=remoteName>> theInstance=null;
-  private <<=remoteName>>(){}
+  protected <<=remoteName>>(){}
 
-  <<=remoteName>> getInstance()
+  public static <<=remoteName>> getInstance()
   {
     if(theInstance==null)
-      theInstace=new <<=remoteName>>();
+      theInstance=new <<=remoteName>>();
     return theInstance;
   }
 

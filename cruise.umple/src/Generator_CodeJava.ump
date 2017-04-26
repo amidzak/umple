@@ -2802,7 +2802,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
             String methodDeclarationLineWithThrows=methodDeclarationLine;
             if(aClass.getIsDistributed())
               methodDeclarationLineWithThrows=line.substring(0,endSignature)+") throws Exception"+NL+"  {"+NL;
-            if ((isSerializable==true&&aClass.getNeedsDefaultInterface()))
+            if ((isSerializable==true&&aClass.getNeedsDefaultInterface())&& !methodName.contains("getInstance"))
             {
               if(doesThrow && isNonStatic)
               {
@@ -2814,25 +2814,28 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
                 proxyContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+"realObject."+methodName+methodPostfix+"("+webServiceObjectidCaller+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
                 methodDeclarationLine=methodDeclarationLine.replace(" "+methodName+"("," "+methodName+methodPostfix+"("+webServiceObjectid);               
               }
-              if(doesThrow && !isNonStatic&&(getModel().getDistributePattern()==1||getModel().getDistributePattern()==2)&& !methodName.contains("getInstance"))
+              if(doesThrow && !isNonStatic&&(getModel().getDistributePattern()==1||getModel().getDistributePattern()==2))
               {
                 proxyContent+=methodDeclarationLineWithThrows+"    try{"+NL+"      "+returnString+realClassName+"."+methodName+methodPostfix+"("+callerSignature+");"+NL+"      }"+NL+"    finally {}"+NL+"  }"+NL;
               }
 
-              if(!doesThrow && !isNonStatic&&(getModel().getDistributePattern()==1||getModel().getDistributePattern()==2)&& !methodName.contains("getInstance"))
+              if(!doesThrow && !isNonStatic&&(getModel().getDistributePattern()==1||getModel().getDistributePattern()==2))
               {
                 proxyContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+realClassName+"."+methodName+methodPostfix+"("+callerSignature+");"+NL+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
                 
               }
-              if(isNonStatic)
+              if(isNonStatic){
                 classContent+=  methodType+methodName+methodPostfix+line.substring(startSignature)+NL;
+
+                remoteContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+remoteRealObject+"."+methodName+methodPostfix+"("+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;  
+                }
               else 
                 classContent+=line+NL;
             }
             else  
               classContent+=line+NL;
 
-            remoteContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+remoteRealObject+"."+methodName+methodPostfix+"("+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;    
+              
           }   
           else if (methodName.equals(realClassName)||methodName.equals(proxyName))
           {           
@@ -2891,7 +2894,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     if(aClass.getIsDistributed()){
       proxyContent+=NL+"  public boolean equals(Object obj)"+NL+"  {";
       if (getModel().getDistributePattern()==0){
-        proxyContent+=NL+"    if(realObject==null)"+NL+"      realObject";
+        proxyContent+=NL+"    if(realObject==null)"+NL+"      realObject= ";
       if(aClass.getDistributeTechnology().equals("RMI"))  
         proxyContent+="this;";
       if(aClass.getDistributeTechnology().equals("WS"))  
