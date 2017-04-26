@@ -197,6 +197,12 @@
 2001: 5, "http://cruise.eecs.uottawa.ca/umple/W20xxErrorinEmbeddedCode.html", Error in Java embedded in Umple: '{0}' ;
 2002: 5, "http://cruise.eecs.uottawa.ca/umple/W20xxErrorinEmbeddedCode.html", Error in C++ embedded in Umple: '{0}' ;
 
+# Warning messages related to distributed systems
+
+7001: 4, "http://cruise.eecs.uottawa.ca/umple/StaticAttributeExists.html", System is distributed but class '{0}' has a static attribute {1}. might result in multiple instances;
+7002: 4, "http://cruise.eecs.uottawa.ca/umple/AssociationNonDistToDistributed.html", Non-distributed class '{0}' has an association with distributed class {1}. ;
+7003: 4, "http://cruise.eecs.uottawa.ca/umple/DistributedWOAssociation.html", Distributed class '{0}' has no associations {1} It is better to define it as regular class if it is not called remotely;
+
 # Special testing messages for debugging
 8001: 1, "http://cruise.eecs.uottawa.ca/umple/PageBeingDeveloped.html", Debug error : '{0}' ;
 8005: 5, "http://cruise.eecs.uottawa.ca/umple/PageBeingDeveloped.html", Debug warning : '{0}' ;

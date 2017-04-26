@@ -1,8 +1,8 @@
-use rmi_objectFactory_add_methods1.ump;
+use objectFactory_add_methods1.ump;
 class UmpleToJava {
-  rmi_objectFactory_add_methods <<!<</*rmi_objectFactory_add_methods*/>><<#
+  objectFactory_add_methods <<!<</*objectFactory_add_methods*/>><<#
   if (model.getDistributePattern()==1){
-    #>><<@ UmpleToJava.rmi_objectFactory_add_methods1 >><<#
+    #>><<@ UmpleToJava.objectFactory_add_methods1 >><<#
   }
   else{
   if(isInterface!=true){
@@ -32,7 +32,7 @@ class UmpleToJava {
           object.remoteUrl=proxyObject.remoteUrl;
           object.remotePort=proxyObject.remotePort;
           object.remoteHashCode=proxyObject.remoteHashCode;
-          return proxyObject.getRealObject();
+          return proxyObject.realObject;
           <<#}
           #>>
         }
@@ -44,7 +44,15 @@ class UmpleToJava {
     }
     else
     {
-    <<=uClass.getName()>>Remote remoteObject = new <<=uClass.getName()>>Remote();
+    <<#if(uClass.getDistributeTechnology().equals("RMI")){#>> 
+        <<=uClass.getName()>>Remote remoteObject = new <<=uClass.getName()>>Remote();
+        listOf<<=uClass.getName()>>.add(remoteObject);
+        <<#}
+        else if(uClass.getDistributeTechnology().equals("WS")){
+        #>>
+    <<=uClass.getName()>>Remote remoteObject = <<=uClass.getName()>>Remote.getInstance();
+    listOf<<=uClass.getName()>>.add(object);
+    <<#}#>>
     while(true)
     {
       try
@@ -56,8 +64,8 @@ class UmpleToJava {
         #>>
         object.remoteUrl=nodes.get(getThisNodeId()).getUrl();
         object.remotePort=String.valueOf(nodes.get(getThisNodeId()).getPort());
-        object.remoteHashCode=String.valueOf(object.getHashCode());
-        Endpoint.publish(object.remoteUrl+":"+object.remotePort+"/<<=uClass.getName()>>Remote"+object.getHashCode(),remoteObject);
+        object.remoteId=listOf<<=uClass.getName()>>.indexOf(object);
+        Endpoint.publish(object.remoteUrl+":"+object.remotePort+"/<<=uClass.getName()>>Remote",remoteObject);
         <<#}#>>
         break;
       } 
@@ -67,17 +75,17 @@ class UmpleToJava {
       }
     }  
     remoteObject.setRealObject(object);
-    listOf<<=uClass.getName()>>.add(remoteObject);
     return remoteObject;
     }
   }
     <<#
     }
-  append(realSb,"\n  {0}{1} {2}({3})",new Object[] {webMethod,accessibilityCreate, "create"+uClass.getName(), arguments});
   if(isInterface==true){
+  append(realSb,"\n  {0}{1} {2}({3})",new Object[] {webMethod,accessibilityCreate, "create"+uClass.getName(), arguments});
   #>>throws RemoteException;<<#
   }
   else{
+    append(realSb,"\n  {0}synchronized {1} {2}({3})",new Object[] {webMethod,accessibilityCreate, "create"+uClass.getName(), arguments});
     if(uClass.getIsSingleton()){
     #>>
     {

@@ -99,8 +99,11 @@ boolean hasParentInterface=uClass.hasParentInterface();
 if(uClass.getNeedsDefaultInterface())
 {
   if (hasParentInterface == false){
-        if(model.getDistributePattern()==0)
-          append(realSb," implements java.io.Serializable,I"+uClass.getName()+"Impl");
+        if(model.getDistributePattern()==0){
+          append(realSb," implements java.io.Serializable");
+          if(uClass.getDistributeTechnology().equals("RMI"))
+            append(realSb,", I"+uClass.getName()+"Impl");
+        }
         else if(model.getDistributePattern()==1&&uClass.getIsDistributed())
           append(realSb," implements java.io.Serializable , I"+uClass.getName());
         else if(model.getDistributePattern()==2)
@@ -109,11 +112,26 @@ if(uClass.getNeedsDefaultInterface())
       }
       else{
           if(model.getDistributePattern()==0)
-            append(realSb," ,java.io.Serializable,I"+uClass.getName()+"Impl");
+          {
+            append(realSb," ,java.io.Serializable");
+          if(uClass.getDistributeTechnology().equals("RMI"))
+            append(realSb,", I"+uClass.getName()+"Impl");            
+          }
         else if(model.getDistributePattern()==1&&uClass.getIsDistributed())
           append(realSb," ,java.io.Serializable , I"+uClass.getName());
         else if(model.getDistributePattern()==2)
            append(realSb," ,java.io.Serializable ,I"+uClass.getName().substring(0,uClass.getName().length()-4));
+      } 
+}
+if(model.getDistributed())
+{
+  if (hasParentInterface == false){
+        if(!uClass.getIsDistributed())
+          append(realSb," implements java.io.Serializable");
+      }
+      else{
+          if(!uClass.getIsDistributed())
+            append(realSb," ,java.io.Serializable");
       } 
 }
 
@@ -188,6 +206,10 @@ for (StateMachine smq : uClass.getStateMachines())
     String self="this";
     if(uClass.getIsDistributed()&&model.getDistributePattern()==1)
       self="self";
+    String isTransient="";
+    if (uClass.getIsDistributed() && model.getDistributePattern()==0)
+      isTransient="transient ";
+
   #>><<@ UmpleToJava.members_AllStatics >><<@ UmpleToJava.members_AllAttributes >><<@ UmpleToJava.members_AllStateMachines >><<@ UmpleToJava.members_AllDoActivities >><<@ UmpleToJava.members_AllAssociations >><<@ UmpleToJava.members_AllHelpers >>
   <<#return realSb.toString();
     }

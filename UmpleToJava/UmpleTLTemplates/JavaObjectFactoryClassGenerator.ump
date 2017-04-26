@@ -116,7 +116,7 @@ public class UmpleRuntime implements IUmpleRuntime
   static int thisNodeId=-1;
   private int numberOfNodes=0;
   private static String fileAddress="";
-  static List<UmpleNode> nodes=new ArrayList<UmpleNode>();;
+  static List<UmpleNode> nodes=new ArrayList<UmpleNode>();
   static HashMap <String, UmpleComponent> components= new HashMap<String, UmpleComponent>();
   public static void setFileAddress(String address)
   {
@@ -142,7 +142,7 @@ public class UmpleRuntime implements IUmpleRuntime
 
       input = new FileInputStream("config.properties");
       prop.load(input);
-      setThisNodeId(Integer.parseInt(prop.getProperty("component")));
+      setThisNodeId(Integer.parseInt(prop.getProperty("name")));
       location=prop.getProperty("location");
       setFileAddress(location);
     } catch (IOException e)

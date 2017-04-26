@@ -1,6 +1,6 @@
 
 class UmpleToJava {
-  rmi_objectFactory_add_methods1 <<!<</*rmi_objectFactory_add_methods1*/>><<#
+  objectFactory_add_methods1 <<!<</*objectFactory_add_methods1*/>><<#
   if(isInterface!=true){
     append(realSb,"\n  {0} {1}({2}{3} proxy)",new Object[] {accessibility, "new"+uClass.getName(), arguments+argumentscomma,uClass.getName()});
 
@@ -74,7 +74,7 @@ class UmpleToJava {
     } 
 
   listOf<<=uClass.getName()>>.add(object);
-  return remoteObject; 
+  return object; 
   }
   <<#
     }#>>!>>

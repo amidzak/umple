@@ -22,10 +22,9 @@ class JavaDistributedTemplates {
 
     emit getproxyReadObjectCode(String remoteName, String packageName,String interfaceName)(ProxyreadObjectCode);
 
-
     ProxyreadObjectCode <<!
       public  String remoteUrl;
-      public  String remoteHashCode;
+      public  Integer objectId;
       public  String remotePort;
       private void readObject(java.io.ObjectInputStream in) throws Exception
       {
@@ -42,7 +41,7 @@ class JavaDistributedTemplates {
       while (!success) {        
       try 
       {
-      URL url = new URL(remoteUrl+":"+remotePort+"/<<=remoteName>>"+remoteHashCode+"?wsdl");
+      URL url = new URL(remoteUrl+":"+remotePort+"/<<=remoteName>>?wsdl");
       QName qname = new QName("http://<<=packageName>>/","<<=remoteName>>Service");
       Service service = Service.create(url, qname);
       realObject=service.getPort(<<=interfaceName>>.class);
@@ -56,5 +55,18 @@ class JavaDistributedTemplates {
         }
       }
     }
+ !>>
+     emit getremoteSingletonCode(String remoteName, String packageName,String interfaceName)(remoteSingleton);
+ remoteSingleton<<!
+  private static <<=remoteName>> theInstance=null;
+  private <<=remoteName>>(){}
+
+  <<=remoteName>> getInstance()
+  {
+    if(theInstance==null)
+      theInstace=new <<=remoteName>>();
+    return theInstance;
+  }
+
  !>>
 }

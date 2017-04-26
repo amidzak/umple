@@ -1,6 +1,6 @@
 use objectFactory_add_DeclareDefault.ump;
 use objectFactory_add_DeclareOneToOne.ump;
-use rmi_objectFactory_add_methods.ump;
+use objectFactory_add_methods.ump;
 
 class UmpleToJava {
     objectFactory_add_Declare_All <<!<</*objectFactory_add_Declare_All*/>><<#
@@ -18,7 +18,7 @@ class UmpleToJava {
       String caller;
       String argumentscomma;
       String accessibility = "public I"+uClass.getName()+"Impl";
-      String accessibilityCreate=accessibility;
+      String accessibilityCreate="public I"+uClass.getName()+"Impl";
       if(model.getDistributePattern()==2)
         accessibility = "public "+uClass.getName();
       String webMethod="";
@@ -94,7 +94,7 @@ class UmpleToJava {
             else{
               argumentscomma=""; 
             }
-            #>><<@ UmpleToJava.rmi_objectFactory_add_methods >><<#
+            #>><<@ UmpleToJava.objectFactory_add_methods >><<#
             
           }
         }
