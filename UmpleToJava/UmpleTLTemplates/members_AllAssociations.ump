@@ -29,11 +29,11 @@ class UmpleToJava {
     
     if (av.isOne())
     {
-      	append(realSb, "  private {2} {0} {1};", gen.translate("type",av), gen.translate("attributeOne",av),isTransient);
+      	append(realSb, "  private{2} {0} {1};", gen.translate("type",av), gen.translate("attributeOne",av),isTransient);
     }
     else
     {    
-      	append(realSb, "  private {2} List<{0}> {1};", gen.translate("typeMany",av), gen.translate("attributeMany",av),isTransient);
+      	append(realSb, "  private{2} List<{0}> {1};", gen.translate("typeMany",av), gen.translate("attributeMany",av),isTransient);
     }
   }
 }

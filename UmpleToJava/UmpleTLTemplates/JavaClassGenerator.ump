@@ -208,7 +208,7 @@ for (StateMachine smq : uClass.getStateMachines())
       self="self";
     String isTransient="";
     if (uClass.getIsDistributed() && model.getDistributePattern()==0)
-      isTransient="transient ";
+      isTransient=" transient ";
 
   #>><<@ UmpleToJava.members_AllStatics >><<@ UmpleToJava.members_AllAttributes >><<@ UmpleToJava.members_AllStateMachines >><<@ UmpleToJava.members_AllDoActivities >><<@ UmpleToJava.members_AllAssociations >><<@ UmpleToJava.members_AllHelpers >>
   <<#return realSb.toString();

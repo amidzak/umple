@@ -2539,6 +2539,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     String remoteInterfaceName="I"+aClass.getName()+"Impl";
     String remoteInterfaceContent="";
     String webServiceObjectid="";
+    String dummyObjectId="";
     String webServiceObjectidCaller="";
     UmpleInterface parentInterface=null;
     List<String> methodBlacklist=new ArrayList<String>();
@@ -2682,7 +2683,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
               isMethod=true;
           }
        
-          if (tokensInMethod[i].equals("abstract")||((tokensInMethod[i].contains("List"))&&aClass.getDistributeTechnology().equals("WS")))
+          if (tokensInMethod[i].equals("abstract")||((tokensInMethod[i].contains("List")&&aClass.getDistributeTechnology().equals("WS"))))
           {
             isMethod=false;
             break;
@@ -2764,6 +2765,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
                   webServiceObjectid="Integer objectId"+lastArgument;
                   webServiceObjectidCaller="objectId"+lastArgument;
                   remoteRealObject="UmpleRuntime.getInstance().listOf"+aClass.getName()+".get(objectId)";
+                  dummyObjectId="0"+lastArgument;
                 }
           if ((!methodName.equals("equals"))&&(!methodName.equals(realClassName)))
           {
@@ -2826,7 +2828,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
               if(isNonStatic){
                 classContent+=  methodType+methodName+methodPostfix+"("+webServiceObjectid+line.substring(startSignature+1)+NL;
 
-                remoteContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+remoteRealObject+"."+methodName+methodPostfix+"(0"+lastArgument+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;  
+                remoteContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+remoteRealObject+"."+methodName+methodPostfix+"("+dummyObjectId+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;  
                 }
               else 
                 classContent+=line+NL;
