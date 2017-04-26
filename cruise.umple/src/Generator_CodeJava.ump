@@ -2592,7 +2592,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     String[] lines = classContent.split("\n|"+System.getProperty("line.separator"));
     classContent="";
 
-    boolean hasNoargumentConstructor=false;
+    boolean hasNoArgumentConstructor=true;
     /*
     ** Loop going through all of the class file line by line
     */
@@ -2753,7 +2753,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
               if(arguments.length()>0)
               { 
                 lastArgument=", ";
-                hasNoargumentConstructor=true;        
+                hasNoArgumentConstructor=false;        
               }
               else
               {
@@ -2859,7 +2859,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
 
                 proxyContent+=methodType+proxyName+"("+arguments+")"+NL+"  {"+NL+"if(this.getClass()== "+aClass.getName()+".class)"+"    realObject = UmpleRuntime.getInstance().new"+aClass.getName()+"("+callerSignature+lastArgument+"this);\n  }"+NL+"";
               }
-            }
+          }
             else if (methodName.equals(realClassName)||methodName.equals(aClass.getName()))
             {
                     //proxyContent+="  public "+proxyName+"("+arguments+")"+NL+"  {}"+NL;
