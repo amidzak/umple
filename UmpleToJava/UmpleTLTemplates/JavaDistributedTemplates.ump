@@ -58,13 +58,22 @@ class JavaDistributedTemplates {
  !>>
      emit getremoteSingletonCode(String remoteName, String packageName,String interfaceName)(remoteSingleton);
  remoteSingleton <<!
+  private static String url;
+  private static String port;
   private static <<=remoteName>> theInstance=null;
-  protected <<=remoteName>>(){}
-
-  public static <<=remoteName>> getInstance()
+  protected <<=remoteName>>()
   {
-    if(theInstance==null)
-      theInstance=new <<=remoteName>>();
+  }
+  private <<=remoteName>>(String url,String port)
+  {
+    Endpoint.publish(url+":"+port+"/<<=remoteName>>",this);
+  }
+
+  public static <<=remoteName>> getInstance(String url,String port)
+  {
+    if(theInstance==null){
+      theInstance=new <<=remoteName>>(url,port);
+      }
     return theInstance;
   }
 

@@ -101,7 +101,7 @@ if(uClass.getNeedsDefaultInterface())
   if (hasParentInterface == false){
         if(model.getDistributePattern()==0){
           append(realSb," implements java.io.Serializable");
-          if(uClass.getDistributeTechnology().equals("RMI"))
+          if(uClass.getDistributeTechnology().equals("RMI")||true)
             append(realSb,", I"+uClass.getName()+"Impl");
         }
         else if(model.getDistributePattern()==1&&uClass.getIsDistributed())
@@ -114,7 +114,7 @@ if(uClass.getNeedsDefaultInterface())
           if(model.getDistributePattern()==0)
           {
             append(realSb," ,java.io.Serializable");
-          if(uClass.getDistributeTechnology().equals("RMI"))
+          if(uClass.getDistributeTechnology().equals("RMI")||true)
             append(realSb,", I"+uClass.getName()+"Impl");            
           }
         else if(model.getDistributePattern()==1&&uClass.getIsDistributed())

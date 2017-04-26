@@ -53,9 +53,9 @@ class JavaObjectFactoryClassGenerator {
     packageSet.add("java.net.URL");
     packageSet.add("javax.xml.namespace.QName");
     packageSet.add("javax.xml.ws.Service");
+    packageSet.add("javax.jws.WebMethod");
+    packageSet.add("javax.xml.ws.Endpoint");
   }  
-  packageSet.add("javax.jws.WebMethod");
-  packageSet.add("javax.xml.ws.Endpoint");
   
   packageSet.add("java.io.FileInputStream");
   packageSet.add("java.io.InputStreamReader");

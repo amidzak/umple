@@ -50,8 +50,7 @@ class UmpleToJava {
         <<#}
         else if(uClass.getDistributeTechnology().equals("WS")){
         #>>
-    <<=uClass.getName()>>Remote remoteObject = <<=uClass.getName()>>Remote.getInstance();
-    listOf<<=uClass.getName()>>.add(object);
+    <<=uClass.getName()>>Remote remoteObject = <<=uClass.getName()>>Remote.getInstance(nodes.get(getThisNodeId()).getUrl(),String.valueOf(nodes.get(getThisNodeId()).getPort()));
     <<#}#>>
     while(true)
     {
@@ -64,8 +63,8 @@ class UmpleToJava {
         #>>
         object.remoteUrl=nodes.get(getThisNodeId()).getUrl();
         object.remotePort=String.valueOf(nodes.get(getThisNodeId()).getPort());
-        object.objectId=listOf<<=uClass.getName()>>.indexOf(object);
-        Endpoint.publish(object.remoteUrl+":"+object.remotePort+"/<<=uClass.getName()>>Remote",remoteObject);
+        object.objectId=listOf<<=uClass.getName()>>.size();
+        listOf<<=uClass.getName()>>.add(object);
         <<#}#>>
         break;
       } 
