@@ -21,18 +21,18 @@ class UmpleToJava {
       String accessibilityCreate="public I"+uClass.getName()+"Impl";
       if(model.getDistributePattern()==2)
         accessibility = "public "+uClass.getName();
+      if(model.getDistributePattern()==0)
+        accessibility = "public void";  
       String webMethod="";
       if(model.getDistributeTechnology().equals("WS"))
         webMethod="@WebMethod"+NL;
-        if(uClass.getDistributeTechnology().equals("WS")){ 
-      /*  accessibility="public "+uClass.getName()+"Impl";*/  
+      if(uClass.getDistributeTechnology().equals("WS"))
+      {  
         if(model.getDistributePattern()==0) 
         {
-          //accessibility= "public "+uClass.getName()+"Remote";
           accessibilityCreate = "public "+uClass.getName();
-        }
-                  
-        }
+        }         
+      }
 
       for (AssociationVariable av : uClass.getAssociationVariables()) 
       {

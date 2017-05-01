@@ -56,6 +56,34 @@ class JavaDistributedTemplates {
       }
     }
  !>>
+
+    emit getproxyReadObjectCodeRMI(String remoteName, String packageName,String interfaceName)(ProxyreadObjectCodeRMI);
+
+    ProxyreadObjectCodeRMI <<!
+      private  <<=interfaceName>> remoteObject;
+      public void setRemoteObject(<<=interfaceName>> aRemoteObject)
+      {
+        remoteObject=aRemoteObject;
+      }
+      public <<=interfaceName>> getRemoteObject()
+      {
+        return remoteObject;
+      }
+      private void readObject(java.io.ObjectInputStream in) throws Exception
+      {
+        try
+        {
+          in.defaultReadObject();
+        }
+        catch(Exception e)
+        {
+          throw e;
+        }
+
+        realObject=remoteObject;
+      }
+ !>>
+
      emit getremoteSingletonCode(String remoteName, String packageName,String interfaceName)(remoteSingleton);
  remoteSingleton <<!
   private static String url;
@@ -76,6 +104,12 @@ class JavaDistributedTemplates {
       }
     return theInstance;
   }
-
+  public static <<=remoteName>> getInstance()
+  {
+    if(theInstance==null){
+      theInstance=new <<=remoteName>>();
+      }
+    return theInstance;
+  }
  !>>
 }

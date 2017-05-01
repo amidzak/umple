@@ -2628,7 +2628,6 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
 
       if(aClass.getDistributeTechnology().equals("WS"))
         {
-          realObjectType="transient "+realObjectType;
           parentDefaultInterface=parentDefaultInterface.replace(", "," extends ");
 
           remoteInterfaceContent+="import javax.jws.WebMethod;"+NL+"import javax.jws.WebService;"+NL+"import javax.jws.soap.SOAPBinding;"+NL+"import javax.jws.soap.SOAPBinding.Style;"+NL+remoteImports+"@WebService"+NL+"@SOAPBinding(style = Style.RPC)"+NL+"public interface "+remoteInterfaceName+parentDefaultInterface+NL+"{"+NL;
@@ -2645,17 +2644,10 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
         
         proxyPrecode+=remoteImports+"import java.io.Serializable;"+NL+defaultNamespace+"public class "+proxyName+extendsProxy+proxyImplements+NL+"{";
 
-        
-          proxyContent+=NL+"  "+realObjectType+" realObject";  
           if(getModel().getDistributePattern()==0){
-            if(aClass.getDistributeTechnology().equals("RMI"))
-              proxyContent+="=this";
-            else
-              proxyContent+="=this";
-              //proxyContent+="="+remoteName+".getInstance()"; 
-          }
-
-          proxyContent+=";"+NL;
+            realObjectType="transient "+realObjectType;
+          }   
+          proxyContent+=NL+"  "+realObjectType+" realObject=this;"+NL;  
         proxyContent+="  public void setRealObject("+remoteInterfaceName+" aObject)"+NL+"  {"+NL;
         proxyContent+="    realObject=aObject;"+NL+"  }"+NL;
         remoteContent+=NL+"  "+realClassName+" realObject;"+NL;
@@ -2765,7 +2757,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
                   webServiceObjectid="Integer objectId"+lastArgument;
                   webServiceObjectidCaller="objectId"+lastArgument;
                   remoteRealObject="UmpleRuntime.getInstance().listOf"+aClass.getName()+".get(objectId)";
-                  dummyObjectId="0"+lastArgument;
+                  dummyObjectId="null"+lastArgument;
                 }
           if ((!methodName.equals("equals"))&&(!methodName.equals(realClassName)))
           {
@@ -2883,10 +2875,17 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       scopeDepth -= line.length() - line.replace("}", "").length(); // counting the number of "}" in the line and increasing the scopeDepth      
     }
     remoteInterfaceContent+="}";
-    if(aClass.getDistributeTechnology().equals("WS"))
+    if(getModel().getDistributePattern()==0)
     {
-      proxyContent+=templates.getproxyReadObjectCode(remoteName,aClass.getPackageName(),remoteInterfaceName);
-      remoteContent+=templates.getremoteSingletonCode(remoteName,aClass.getPackageName(),remoteInterfaceName);
+      if(aClass.getDistributeTechnology().equals("WS"))
+      {
+        proxyContent+=templates.getproxyReadObjectCode(remoteName,aClass.getPackageName(),remoteInterfaceName);
+        remoteContent+=templates.getremoteSingletonCode(remoteName,aClass.getPackageName(),remoteInterfaceName);
+      }
+      else
+      {
+        proxyContent+=templates.getproxyReadObjectCodeRMI(remoteName,aClass.getPackageName(),remoteInterfaceName);
+      }
     }
     /*
     if(parentInterface!=null){
@@ -2899,9 +2898,9 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
       if (getModel().getDistributePattern()==0){
         proxyContent+=NL+"    if(realObject==null)"+NL+"      realObject= ";
       if(aClass.getDistributeTechnology().equals("RMI"))  
-        proxyContent+="this;";
+        proxyContent+="this;"+NL;
       if(aClass.getDistributeTechnology().equals("WS"))  
-        proxyContent+="this;";
+        proxyContent+="this;"+NL;
 
       }
       else

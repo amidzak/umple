@@ -6,16 +6,6 @@ class UmpleToJava {
   }
   else{
   if(isInterface!=true){
-    append(realSb,"\n  {0} {1}({2}{3} object)",new Object[] {accessibility, "new"+uClass.getName(), arguments+argumentscomma,uClass.getName()});
-
-  #>>
-  {
-      return new<<=uClass.getName()>>(<<=caller+argumentscomma>>UmpleRuntime.getComponent("<<=uClass.getName()>>"),object);
-  
-  }  
-  <<#
-  }
-  if(isInterface!=true){
     append(realSb,"\n  {0} {1}({2}UmpleRuntime.UmpleComponent component,{3} object)",new Object[] {accessibility, "new"+uClass.getName(), arguments+argumentscomma,uClass.getName()});
   #>>
   {
@@ -24,7 +14,10 @@ class UmpleToJava {
       while(true){
         try
         {
-          <<#if(uClass.getDistributeTechnology().equals("RMI")){#>>return remoteFactories.get(getNodeId(component)).create<<=uClass.getName()>>(<<=caller>>);<<#} 
+          <<#if(uClass.getDistributeTechnology().equals("RMI")){#>>object.setRemoteObject(remoteFactories.get(getNodeId(component)).create<<=uClass.getName()>>(<<=caller>>));
+          object.setRealObject(object.getRemoteObject());
+          break;
+          <<#} 
           else
           {
           #>>
@@ -32,7 +25,7 @@ class UmpleToJava {
           object.remoteUrl=proxyObject.remoteUrl;
           object.remotePort=proxyObject.remotePort;
           object.objectId=proxyObject.objectId;
-          return proxyObject.realObject;
+          break;
           <<#}
           #>>
         }
@@ -52,29 +45,30 @@ class UmpleToJava {
         #>>
     <<=uClass.getName()>>Remote remoteObject = <<=uClass.getName()>>Remote.getInstance(nodes.get(getThisNodeId()).getUrl(),String.valueOf(nodes.get(getThisNodeId()).getPort()));
     <<#}#>>
+    <<#if(uClass.getDistributeTechnology().equals("RMI")){#>> 
     while(true)
     {
       try
       {  
-        <<#if(uClass.getDistributeTechnology().equals("RMI")){#>> 
-        UnicastRemoteObject.exportObject(remoteObject,0);
-        <<#}
-        else if(uClass.getDistributeTechnology().equals("WS")){
-        #>>
-        object.remoteUrl=nodes.get(getThisNodeId()).getUrl();
-        object.remotePort=String.valueOf(nodes.get(getThisNodeId()).getPort());
-        object.objectId=listOf<<=uClass.getName()>>.size();
-        listOf<<=uClass.getName()>>.add(object);
-        <<#}#>>
+        
+        UnicastRemoteObject.exportObject(remoteObject,nodes.get(getThisNodeId()).getPort());
+        object.setRemoteObject(remoteObject);
         break;
       } 
       catch (Exception e)
       {
         System.err.println("Server Exception: " + e.toString());
       }
-    }  
+    }
+    <<#}
+        else if(uClass.getDistributeTechnology().equals("WS")){
+        #>>
+        object.remoteUrl=nodes.get(getThisNodeId()).getUrl();
+        object.remotePort=String.valueOf(nodes.get(getThisNodeId()).getPort());
+        object.objectId=object.getHashCodeImpl(null);
+        listOf<<=uClass.getName()>>.put(object.objectId,object);
+        <<#}#>>  
     remoteObject.setRealObject(object);
-    return remoteObject;
     }
   }
     <<#
@@ -107,7 +101,7 @@ class UmpleToJava {
   else
   {
   #>>
-  return object.realObject;
+  return object.getRemoteObject();
   }
   <<#
   }
