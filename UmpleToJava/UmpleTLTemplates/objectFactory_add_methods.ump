@@ -25,6 +25,7 @@ class UmpleToJava {
           object.remoteUrl=proxyObject.remoteUrl;
           object.remotePort=proxyObject.remotePort;
           object.objectId=proxyObject.objectId;
+          object.realObject=proxyObject.realObject;
           break;
           <<#}
           #>>

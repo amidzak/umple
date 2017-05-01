@@ -48,12 +48,10 @@ class UmpleToJava {
     appendln(realSb, "    if(this.getClass()== {0}.class)",uClass.getName());
     appendln(realSb, "        UmpleRuntime.getInstance().new{0}({1}{2} umpleComponent, this);",uClass.getName(),gClass.getLookup("constructorSignature_caller"),lastArgumentComma);    
     appendln(realSb, "");
-    append(realSb, "    if(!umpleComponent.getName().equals(\"local\"))");
+    appendln(realSb, "if(umpleComponent.getNode().getId()!=UmpleRuntime.getThisNodeId())");
     appendln(realSb, "    {");
     append(realSb, "    return;");
     appendln(realSb, "    }");
-    appendln(realSb, "if(umpleComponent.getNode().getId()!=UmpleRuntime.getThisNodeId())");
-    append(realSb, "    return;");
     //appendln(realSb, "    realObject=this;");
     hasBody = true;
   }
