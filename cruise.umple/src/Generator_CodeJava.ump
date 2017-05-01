@@ -2646,8 +2646,11 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
 
           if(getModel().getDistributePattern()==0){
             realObjectType="transient "+realObjectType;
-          }   
-          proxyContent+=NL+"  "+realObjectType+" realObject=this;"+NL;  
+            proxyContent+=NL+"  "+realObjectType+" realObject=this;"+NL;
+          }
+          else{   
+            proxyContent+=NL+"  "+realObjectType+" realObject;"+NL;
+          }  
         proxyContent+="  public void setRealObject("+remoteInterfaceName+" aObject)"+NL+"  {"+NL;
         proxyContent+="    realObject=aObject;"+NL+"  }"+NL;
         remoteContent+=NL+"  "+realClassName+" realObject;"+NL;
