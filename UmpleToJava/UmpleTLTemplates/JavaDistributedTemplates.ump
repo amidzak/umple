@@ -41,7 +41,7 @@ class JavaDistributedTemplates {
       while (!success) {        
       try 
       {
-      URL url = new URL(remoteUrl+":"+remotePort+"/<<=remoteName>>?wsdl");
+      URL url = new URL(remoteUrl+":"+remotePort+"/<<=remoteName>>"+String.valueOf(objectId)+"?wsdl");
       QName qname = new QName("http://<<=packageName>>/","<<=remoteName>>Service");
       Service service = Service.create(url, qname);
       realObject=service.getPort(<<=interfaceName>>.class);
@@ -86,30 +86,13 @@ class JavaDistributedTemplates {
 
      emit getremoteSingletonCode(String remoteName, String packageName,String interfaceName)(remoteSingleton);
  remoteSingleton <<!
-  private static String url;
-  private static String port;
-  private static <<=remoteName>> theInstance=null;
   protected <<=remoteName>>()
   {
   }
-  private <<=remoteName>>(String url,String port)
+  public <<=remoteName>>(String url,String port,Integer objectId)
   {
-    Endpoint.publish(url+":"+port+"/<<=remoteName>>",this);
+    Endpoint.publish(url+":"+port+"/<<=remoteName>>"+String.valueOf(objectId),this);
   }
 
-  public static <<=remoteName>> getInstance(String url,String port)
-  {
-    if(theInstance==null){
-      theInstance=new <<=remoteName>>(url,port);
-      }
-    return theInstance;
-  }
-  public static <<=remoteName>> getInstance()
-  {
-    if(theInstance==null){
-      theInstance=new <<=remoteName>>();
-      }
-    return theInstance;
-  }
  !>>
 }

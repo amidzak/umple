@@ -5,7 +5,7 @@ class UmpleToJava {
   if(uClass.getDistributeTechnology().equals("WS"))
   {
   #>>
-  	listOf<<=uClass.getName()>> = new HashMap<Integer,<<=uClass.getName()>>>();
+  	listOf<<=uClass.getName()>> = new ArrayList<<<="I"+uClass.getName()+"Impl">>>();
   <<#
   }
   else{

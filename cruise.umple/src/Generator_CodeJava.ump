@@ -2538,9 +2538,6 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     String extendsProxy="";
     String remoteInterfaceName="I"+aClass.getName()+"Impl";
     String remoteInterfaceContent="";
-    String webServiceObjectid="";
-    String dummyObjectId="";
-    String webServiceObjectidCaller="";
     UmpleInterface parentInterface=null;
     List<String> methodBlacklist=new ArrayList<String>();
     if(getModel().getDistributePattern()==0)
@@ -2755,13 +2752,6 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
               {
                 callerSignature="";  
               }   
-              if(aClass.getDistributeTechnology().equals("WS"))
-                {
-                  webServiceObjectid="Integer objectId"+lastArgument;
-                  webServiceObjectidCaller="objectId"+lastArgument;
-                  remoteRealObject="UmpleRuntime.getInstance().listOf"+aClass.getName()+".get(objectId)";
-                  dummyObjectId="null"+lastArgument;
-                }
           if ((!methodName.equals("equals"))&&(!methodName.equals(realClassName)))
           {
             if(isNonStatic)
@@ -2777,7 +2767,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
                   if(aClass.getDistributeTechnology().equals("RMI"))
                     remoteInterfaceContent+=methodType+methodName+methodPostfix+"("+arguments+") throws RemoteException;"+NL; 
                   if(aClass.getDistributeTechnology().equals("WS"))
-                    remoteInterfaceContent+="@WebMethod"+NL+methodType+methodName+methodPostfix+"("+webServiceObjectid+arguments+");"+NL;
+                    remoteInterfaceContent+="@WebMethod"+NL+methodType+methodName+methodPostfix+"("+arguments+");"+NL;
                      
               }
             }               
@@ -2802,13 +2792,13 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
             {
               if(doesThrow && isNonStatic)
               {
-                proxyContent+=methodDeclarationLineWithThrows+"    try{"+NL+"      "+returnString+"realObject."+methodName+methodPostfix+"("+webServiceObjectidCaller+callerSignature+");"+NL+breakString+"      }"+NL+"    finally {}"+NL+"  }"+NL;
+                proxyContent+=methodDeclarationLineWithThrows+"    try{"+NL+"      "+returnString+"realObject."+methodName+methodPostfix+"("+callerSignature+");"+NL+breakString+"      }"+NL+"    finally {}"+NL+"  }"+NL;
               }
 
               if(!doesThrow && isNonStatic)
               {
-                proxyContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+"realObject."+methodName+methodPostfix+"("+webServiceObjectidCaller+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
-                methodDeclarationLine=methodDeclarationLine.replace(" "+methodName+"("," "+methodName+methodPostfix+"("+webServiceObjectid);               
+                proxyContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+"realObject."+methodName+methodPostfix+"("+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
+                methodDeclarationLine=methodDeclarationLine.replace(" "+methodName+"("," "+methodName+methodPostfix+"(");               
               }
               if(doesThrow && !isNonStatic&&(getModel().getDistributePattern()==1||getModel().getDistributePattern()==2))
               {
@@ -2821,9 +2811,9 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
                 
               }
               if(isNonStatic){
-                classContent+=  methodType+methodName+methodPostfix+"("+webServiceObjectid+line.substring(startSignature+1)+NL;
+                classContent+=  methodType+methodName+methodPostfix+"("+line.substring(startSignature+1)+NL;
 
-                remoteContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+remoteRealObject+"."+methodName+methodPostfix+"("+dummyObjectId+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;  
+                remoteContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+remoteRealObject+"."+methodName+methodPostfix+"("+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;  
                 }
               else 
                 classContent+=line+NL;
@@ -2865,7 +2855,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
             classContent+=line+NL;
           }
           else
-            classContent+=  methodType+methodName+methodPostfix+"("+webServiceObjectid+line.substring(startSignature+1)+NL;
+            classContent+=  methodType+methodName+methodPostfix+"("+line.substring(startSignature+1)+NL;
         }
         else if(!line.equals("}"))
           classContent+=line+NL;       
