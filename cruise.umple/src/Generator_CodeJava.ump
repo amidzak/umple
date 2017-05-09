@@ -2637,13 +2637,13 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
         else{
           proxyContent+="  public void setRealObject("+remoteInterfaceName+" aObject)"+NL+"  {"+NL;
           proxyContent+="    realObject=aObject;"+NL+"  }"+NL;
-          remoteContent+=NL+"  "+realClassName+" realObject;"+NL;
-          remoteContent+="  public void setRealObject("+realClassName+" aObject)"+NL+"  {"+NL;
-          remoteContent+="    realObject=aObject;"+NL+"  }"+NL;
-          
+
           remoteInterfaceContent+=remoteImports+"public interface "+remoteInterfaceName+" extends java.rmi.Remote"+parentDefaultInterface+NL+"{"+NL;
           remoteContent+=NL+"import java.rmi.registry.Registry;"+NL+"import java.rmi.registry.LocateRegistry;"+NL+"import java.rmi.server.UnicastRemoteObject;"+NL+"public class " + remoteName+extendsRemoteProxy+" implements "+remoteInterfaceName+NL+"{";
 
+          remoteContent+=NL+"  "+realClassName+" realObject;"+NL;
+          remoteContent+="  public void setRealObject("+realClassName+" aObject)"+NL+"  {"+NL;
+          remoteContent+="    realObject=aObject;"+NL+"  }"+NL;
         }
         
         
