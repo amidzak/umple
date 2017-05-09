@@ -44,15 +44,13 @@ class UmpleToJava {
         <<#}
         else if(uClass.getDistributeTechnology().equals("WS")){
         #>>
-    <<=uClass.getName()>>Remote remoteObject = new <<=uClass.getName()>>Remote(nodes.get(getThisNodeId()).getUrl(),String.valueOf(nodes.get(getThisNodeId()).getPort()),object.getHashCodeImpl());
-    listOf<<=uClass.getName()>>.add(remoteObject);
+    listOf<<=uClass.getName()>>.add(object);
     <<#}#>>
     <<#if(uClass.getDistributeTechnology().equals("RMI")){#>> 
     while(true)
     {
       try
       {  
-        
         UnicastRemoteObject.exportObject(remoteObject,nodes.get(getThisNodeId()).getPort());
         object.setRemoteObject(remoteObject);
         break;
@@ -62,14 +60,16 @@ class UmpleToJava {
         System.err.println("Server Exception: " + e.toString());
       }
     }
+    remoteObject.setRealObject(object);
     <<#}
         else if(uClass.getDistributeTechnology().equals("WS")){
         #>>
         object.remoteUrl=nodes.get(getThisNodeId()).getUrl();
         object.remotePort=String.valueOf(nodes.get(getThisNodeId()).getPort());
         object.objectId=object.getHashCodeImpl();
+        Endpoint.publish(object.remoteUrl+":"+object.remotePort+"/<<=uClass.getName()>>"+String.valueOf(object.objectId),object);
         <<#}#>>  
-    remoteObject.setRealObject(object);
+    
     }
   }
     <<#

@@ -92,7 +92,13 @@ class JavaClassGenerator {
 <<# if (uClass.numberOfComments() > 0) { append(realSb, "\n{0}", Comment.format("Javadoc",uClass.getComments())); } #>>
 <<# for (Position p : uClass.getPositions()) { #>>
 // line <<= p.getLineNumber() >> "<<= uClass.getRelativePath(p.getFilename(),"Java") >>"
-<<# } #>>
+<<# }
+if(model.getDistributePattern()==0 && uClass.getDistributeTechnology().equals("WS")){
+String classPackageName=(uClass.getPackageName().length() == 0 ? "" : uClass.getPackageName() + ".")+"I"+uClass.getName()+"Impl";
+#>>
+@WebService(endpointInterface = "<<#append(realSb,classPackageName);#>>")
+<<#}
+#>>
 public <<# if (uClass.getIsAbstract()) { append(realSb, "{0} ", "abstract"); } #>>class <<=uClass.getName()>><<= gen.translate("isA",uClass) >><<#
 boolean hasParentInterface=uClass.hasParentInterface();
 
@@ -101,8 +107,7 @@ if(uClass.getNeedsDefaultInterface())
   if (hasParentInterface == false){
         if(model.getDistributePattern()==0){
           append(realSb," implements java.io.Serializable");
-          if(uClass.getDistributeTechnology().equals("RMI")||true)
-            append(realSb,", I"+uClass.getName()+"Impl");
+          append(realSb,", I"+uClass.getName()+"Impl");
         }
         else if(model.getDistributePattern()==1&&uClass.getIsDistributed())
           append(realSb," implements java.io.Serializable , I"+uClass.getName());
@@ -114,7 +119,6 @@ if(uClass.getNeedsDefaultInterface())
           if(model.getDistributePattern()==0)
           {
             append(realSb," ,java.io.Serializable");
-          if(uClass.getDistributeTechnology().equals("RMI")||true)
             append(realSb,", I"+uClass.getName()+"Impl");            
           }
         else if(model.getDistributePattern()==1&&uClass.getIsDistributed())
