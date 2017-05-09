@@ -2593,6 +2593,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     classContent="";
 
     boolean hasNoArgumentConstructor=false;
+    boolean hasEquals=false;
     /*
     ** Loop going through all of the class file line by line
     */
@@ -2695,7 +2696,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
           {
             isNonStatic=false;
           }
-          if ((tokensInMethod[i].contains("["))||(tokensInMethod[i].equals("toString"))||(tokensInMethod[i].equals("hashCode")))
+          if ((tokensInMethod[i].contains("["))||(tokensInMethod[i].equals("toString"))||(tokensInMethod[i].equals("hashCode"))||tokensInMethod[i].contains("private"))
           {
             isSerializable=false;
           }  
@@ -2755,19 +2756,21 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
               else
               {
                 callerSignature="";  
-              }   
-          if ((!methodName.equals("equals"))&&(!methodName.equals(realClassName)))
+              }  
+          if (methodName.equals("equals"))
+            hasEquals=true;     
+          if ((!methodName.equals(realClassName))&&(isSerializable==true))
           {
-            if(isNonStatic)
+            if((!methodName.equals("equals")||getModel().getDistributePattern()==0)&&isNonStatic)
             {
               if(!aClass.getIsDistributed() && ( aClass.getHasProxyPattern() || !aClass.getIsDefaultInterfaceRemoteRMI()))
               {
                 if (parentInterface==null||methodName.equals("setRealSelf")||methodName.equals("getHashCode")||methodName.equals("delete"))
                   remoteInterfaceContent+=methodType+methodName+methodPostfix+"("+arguments+");"+NL;                 
               }
-              else if (isSerializable==true)
+              else
               {
-                if (parentInterface==null||methodName.equals("setRealSelf")||methodName.equals("getHashCode")||methodName.equals("delete"))
+                if (parentInterface==null||methodName.equals("getHashCode")||methodName.equals("delete"))
                   if(aClass.getDistributeTechnology().equals("RMI"))
                     remoteInterfaceContent+=methodType+methodName+methodPostfix+"("+arguments+") throws RemoteException;"+NL; 
                   if(aClass.getDistributeTechnology().equals("WS"))
@@ -2792,7 +2795,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
             String methodDeclarationLineWithThrows=methodDeclarationLine;
             if(aClass.getIsDistributed())
               methodDeclarationLineWithThrows=line.substring(0,endSignature)+") throws Exception"+NL+"  {"+NL;
-            if ((isSerializable==true&&aClass.getNeedsDefaultInterface())&& !methodName.contains("getInstance"))
+            if (isSerializable==true && aClass.getNeedsDefaultInterface() && !methodName.contains("getInstance"))
             {
               if(doesThrow && isNonStatic)
               {
@@ -2814,11 +2817,12 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
                 proxyContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+realClassName+"."+methodName+methodPostfix+"("+callerSignature+");"+NL+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;
                 
               }
-              if(isNonStatic){
+              if(isNonStatic)
+              {
                 classContent+=  methodType+methodName+methodPostfix+"("+line.substring(startSignature+1)+NL;
 
                 remoteContent+=methodDeclarationLine+"    while(true)"+NL+"      try{"+NL+"        "+returnString+remoteRealObject+"."+methodName+methodPostfix+"("+callerSignature+");"+NL+breakString+"        }"+NL+"    catch(Exception e) {System.err.println(e.toString());}"+NL+"  }"+NL;  
-                }
+              }
               else 
                 classContent+=line+NL;
             }
@@ -2837,29 +2841,30 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
 
             if(aClass.getIsDistributed())
             { 
-             if(getModel().getDistributePattern()==0 && arguments.contains("UmpleRuntime.UmpleComponent umpleComponent")){
-                callerSignature=callerSignature.substring(0,callerSignature.length()-14);
-                if(arguments.contains(", UmpleRuntime"))
-                {
-                  arguments=arguments.substring(0,arguments.length()-44);
-                }
-                else
-                {
-                  arguments=arguments.substring(0,arguments.length()-42);
-                }  
-                proxyContent+=methodType+methodName+"("+arguments+")"+NL+"  {"+NL;
-                proxyContent+=NL+"this("+callerSignature+"UmpleRuntime.getComponent(\""+aClass.getName()+"\"));"+NL+"  }"+NL+"";
+             if(getModel().getDistributePattern()==0 && arguments.contains("UmpleRuntime.UmpleComponent umpleComponent"))
+             {
+              callerSignature=callerSignature.substring(0,callerSignature.length()-14);
+              if(arguments.contains(", UmpleRuntime"))
+              {
+                arguments=arguments.substring(0,arguments.length()-44);
               }
-              if(getModel().getDistributePattern()==1){
-                proxyContent+=methodType+proxyName+"("+arguments+lastArgument+"UmpleRuntime.UmpleComponent component)"+NL+"  {"+NL+"    realObject = UmpleRuntime.getInstance().new"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);"+NL+"  }"+NL;
+              else
+              {
+                arguments=arguments.substring(0,arguments.length()-42);
+              }  
+              proxyContent+=methodType+methodName+"("+arguments+")"+NL+"  {"+NL;
+              proxyContent+=NL+"this("+callerSignature+"UmpleRuntime.getComponent(\""+aClass.getName()+"\"));"+NL+"  }"+NL+"";
+            }
+            if(getModel().getDistributePattern()==1){
+              proxyContent+=methodType+proxyName+"("+arguments+lastArgument+"UmpleRuntime.UmpleComponent component)"+NL+"  {"+NL+"    realObject = UmpleRuntime.getInstance().new"+aClass.getName()+"("+callerSignature+lastArgument+"component, this);"+NL+"  }"+NL;
 
-                proxyContent+=methodType+proxyName+"("+arguments+")"+NL+"  {"+NL+"if(this.getClass()== "+aClass.getName()+".class)"+"    realObject = UmpleRuntime.getInstance().new"+aClass.getName()+"("+callerSignature+lastArgument+"this);\n  }"+NL+"";
+              proxyContent+=methodType+proxyName+"("+arguments+")"+NL+"  {"+NL+"if(this.getClass()== "+aClass.getName()+".class)"+"    realObject = UmpleRuntime.getInstance().new"+aClass.getName()+"("+callerSignature+lastArgument+"this);\n  }"+NL+"";
               }
-          }
+            }
             classContent+=line+NL;
           }
           else
-            classContent+=  methodType+methodName+methodPostfix+"("+line.substring(startSignature+1)+NL;
+            classContent+=line+NL;
         }
         else if(!line.equals("}"))
           classContent+=line+NL;       
@@ -2891,18 +2896,22 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     }
     */
     if(aClass.getIsDistributed()){
-      proxyContent+=NL+"  public boolean equals(Object obj)"+NL+"  {";
       if (getModel().getDistributePattern()==0){
-        proxyContent+=NL+"    if(realObject==null)"+NL+"      realObject= ";
-      if(aClass.getDistributeTechnology().equals("RMI"))  
-        proxyContent+="this;"+NL;
-      if(aClass.getDistributeTechnology().equals("WS"))  
-        proxyContent+="this;"+NL;
-
+        if(!hasEquals)
+        {
+          proxyContent+=NL+"  public boolean equals(Object obj)"+NL+"  {";
+          proxyContent+=NL+"    if(realObject==null)"+NL+"      realObject= ";
+        if(aClass.getDistributeTechnology().equals("RMI"))  
+          proxyContent+="this;"+NL;
+        if(aClass.getDistributeTechnology().equals("WS"))  
+          proxyContent+="this;"+NL;
+        proxyContent+="    if(obj.getClass()!=this.getClass())"+NL+"      return false;"+NL+"    return (getHashCode()==(("+aClass.getName()+")obj).getHashCode());"+NL+"  }";
+        }
       }
-      else
-       proxyContent+=NL+"    if(obj==null)"+NL+"      return false;"+NL;  
+      else{
+       proxyContent+=NL+"  public boolean equals(Object obj)"+NL+"  {"; 
       proxyContent+="    if(obj.getClass()!=this.getClass())"+NL+"      return false;"+NL+"    return (getHashCode()==(("+aClass.getName()+")obj).getHashCode());"+NL+"  }";
+        }
     
     if(aClass.getIsSingleton())
     {

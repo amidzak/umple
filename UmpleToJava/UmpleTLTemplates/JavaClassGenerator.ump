@@ -127,7 +127,7 @@ if(uClass.getNeedsDefaultInterface())
            append(realSb," ,java.io.Serializable ,I"+uClass.getName().substring(0,uClass.getName().length()-4));
       } 
 }
-if(model.getDistributed())
+else if(model.getDistributed())
 {
   if (hasParentInterface == false){
         if(!uClass.getIsDistributed())

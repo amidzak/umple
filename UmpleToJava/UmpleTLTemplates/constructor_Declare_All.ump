@@ -24,7 +24,7 @@ class UmpleToJava {
   String lastArgumentComma="";
   if(uClass.getIsDistributed()&&model.getDistributePattern()==0)
   {    
-    if(!uClass.isRoot())
+    if(!uClass.isRoot()&& uClass.getExtendsClass().getIsDistributed())
     {
       if (!gClass.getParentClass().getLookup("constructorSignature_caller").equals(""))
         componentSignatureCaller=",umpleComponent";
