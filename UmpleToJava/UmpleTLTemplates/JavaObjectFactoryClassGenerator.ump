@@ -174,7 +174,8 @@ public class UmpleRuntime implements IUmpleRuntime
     List<IUmpleRuntime> remoteFactories;
     
 
-    <<@ UmpleToJava.objectFactory_listOfObjects_All >>
+   /* <<@ UmpleToJava.objectFactory_listOfObjects_All >>*/
+   public List<Object> listOfObjects;
     
     
 
@@ -188,7 +189,8 @@ public class UmpleRuntime implements IUmpleRuntime
    
     private UmpleRuntime()
     { 
-      <<@ UmpleToJava.objectFactory_listOfObjects_instantiation_All >>
+      /*<<@ UmpleToJava.objectFactory_listOfObjects_instantiation_All >>*/
+      listOfObjects=new ArrayList<Object>();
       remoteFactories= new ArrayList<IUmpleRuntime>();
       initialize();
     }

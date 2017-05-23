@@ -9,8 +9,7 @@ class UmpleToJava {
     append(realSb,"\n  {0} {1}({2}UmpleRuntime.UmpleComponent component,{3} object)",new Object[] {accessibility, "new"+uClass.getName(), arguments+argumentscomma,uClass.getName()});
   #>>
   {
-    if(getNodeId(component)!=getThisNodeId())
-    {
+
       while(true){
         try
         {
@@ -33,18 +32,29 @@ class UmpleToJava {
         catch(Exception e) 
         {
           e.printStackTrace();
+          try { Thread.sleep(1000); } catch (InterruptedException interruptedException) {};
         }  
       }
-    }
-    else
-    {
-    <<#if(uClass.getDistributeTechnology().equals("RMI")){#>> 
-        <<=uClass.getName()>>Remote remoteObject = new <<=uClass.getName()>>Remote();
-        listOf<<=uClass.getName()>>.add(remoteObject);
+      }
+
+    <<#    append(realSb,"\n  {0} {1}({2} object){",new Object[] {accessibility, "new"+uClass.getName(),uClass.getName()});
+
+    if(uClass.getDistributeTechnology().equals("RMI")){#>> 
+        
+        <<=uClass.getName()>>Remote remoteObject;
+        try{
+        remoteObject = (<<=uClass.getName()>>Remote)Class.forName(object.getClass().getName()+"Remote").newInstance();
+        }
+        catch (Exception e)
+        {
+          System.err.println("Class not found " + e.toString());
+          return;
+        }
+        listOfObjects.add(remoteObject);
         <<#}
         else if(uClass.getDistributeTechnology().equals("WS")){
         #>>
-    listOf<<=uClass.getName()>>.add(object);
+    listOfObjects.add(object);
     <<#}#>>
     <<#if(uClass.getDistributeTechnology().equals("RMI")){#>> 
     while(true)
@@ -58,6 +68,7 @@ class UmpleToJava {
       catch (Exception e)
       {
         System.err.println("Server Exception: " + e.toString());
+        try { Thread.sleep(1000); } catch (InterruptedException interruptedException) {};
       }
     }
     remoteObject.setRealObject(object);
@@ -69,9 +80,8 @@ class UmpleToJava {
         object.objectId=object.getHashCodeImpl();
         Endpoint.publish(object.remoteUrl+":"+object.remotePort+"/<<=uClass.getName()>>"+String.valueOf(object.objectId),object);
         <<#}#>>  
-    
     }
-  }
+    
     <<#
     }
   if(isInterface==true){

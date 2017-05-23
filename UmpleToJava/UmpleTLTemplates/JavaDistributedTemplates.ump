@@ -20,12 +20,16 @@ class JavaDistributedTemplates {
         buffer.append(StringFormatter.format(input,variables));
     }
 
-    emit getproxyReadObjectCode(String remoteName, String packageName,String interfaceName)(ProxyreadObjectCode);
+    emit getproxyReadObjectCode(String remoteName, String packageName,String interfaceName,UmpleClass uClass)(ProxyreadObjectCode);
 
     ProxyreadObjectCode <<!
+    <<#if (uClass.getExtendsClass() == null||(uClass.getExtendsClass() != null && ! uClass.getExtendsClass().getIsDistributed()))
+    {
+    #>>
       public  String remoteUrl;
       public  Integer objectId;
       public  String remotePort;
+      <<#}#>>
       private void readObject(java.io.ObjectInputStream in) throws Exception
       {
         try
@@ -57,30 +61,34 @@ class JavaDistributedTemplates {
     }
  !>>
 
-    emit getproxyReadObjectCodeRMI(String remoteName, String packageName,String interfaceName)(ProxyreadObjectCodeRMI);
+    emit getproxyReadObjectCodeRMI(String remoteName, String packageName,String interfaceName,UmpleClass uClass)(ProxyreadObjectCodeRMI);
 
     ProxyreadObjectCodeRMI <<!
-      private  <<=interfaceName>> remoteObject;
+    <<#if (uClass.getExtendsClass() == null||(uClass.getExtendsClass() != null && ! uClass.getExtendsClass().getIsDistributed()))
+    {
+    #>>
+      protected  <<=interfaceName>> remoteObject;
+    <<#}#>>  
       public void setRemoteObject(<<=interfaceName>> aRemoteObject)
       {
         remoteObject=aRemoteObject;
       }
       public <<=interfaceName>> getRemoteObject()
       {
-        return remoteObject;
+        return (<<=interfaceName>>)remoteObject;
       }
       private void readObject(java.io.ObjectInputStream in) throws Exception
       {
         try
         {
           in.defaultReadObject();
+          realObject=(<<=interfaceName>>)remoteObject;
         }
         catch(Exception e)
         {
           throw e;
         }
-
-        realObject=remoteObject;
+        
       }
  !>>
 

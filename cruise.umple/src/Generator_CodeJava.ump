@@ -2881,12 +2881,12 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     {
       if(aClass.getDistributeTechnology().equals("WS"))
       {
-        proxyContent+=templates.getproxyReadObjectCode(aClass.getName(),aClass.getPackageName(),remoteInterfaceName);
+        proxyContent+=templates.getproxyReadObjectCode(aClass.getName(),aClass.getPackageName(),remoteInterfaceName,aClass);
         //remoteContent+=templates.getremoteSingletonCode(remoteName,aClass.getPackageName(),remoteInterfaceName);
       }
       else
       {
-        proxyContent+=templates.getproxyReadObjectCodeRMI(remoteName,aClass.getPackageName(),remoteInterfaceName);
+        proxyContent+=templates.getproxyReadObjectCodeRMI(remoteName,aClass.getPackageName(),remoteInterfaceName,aClass);
       }
     }
     /*
