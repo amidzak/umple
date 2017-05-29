@@ -43,7 +43,7 @@ class UmpleToJava {
         
         <<=uClass.getName()>>Remote remoteObject;
         try{
-        remoteObject = (<<=uClass.getName()>>Remote)Class.forName(object.getClass().getName()+"Remote").newInstance();
+        remoteObject = (<<=uClass.getName()>>Remote)Class.forName(object.getClass().getName()+"Remote").getConstructor(object.getClass()).newInstance(object);
         }
         catch (Exception e)
         {
@@ -71,7 +71,7 @@ class UmpleToJava {
         try { Thread.sleep(1000); } catch (InterruptedException interruptedException) {};
       }
     }
-    remoteObject.setRealObject(object);
+    
     <<#}
         else if(uClass.getDistributeTechnology().equals("WS")){
         #>>

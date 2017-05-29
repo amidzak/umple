@@ -2540,6 +2540,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     String extendsProxy="";
     String remoteInterfaceName="I"+aClass.getName()+"Impl";
     String remoteInterfaceContent="";
+    String remoteClassSuperCall="";
     UmpleInterface parentInterface=null;
     List<String> methodBlacklist=new ArrayList<String>();
     if(getModel().getDistributePattern()==0)
@@ -2554,6 +2555,7 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     if(aClass.getExtendsClass()!=null){
       extendsProxy=" extends "+aClass.getExtendsClass().getName();
       extendsRemoteProxy= " extends "+aClass.getExtendsClass().getName()+"Remote";
+      remoteClassSuperCall="  super(aObject);"+NL;
       if(aClass.getExtendsClass().getName().length()>4)
         if (getModel().getDistributePattern()==1&&aClass.getExtendsClass().getName().substring(aClass.getExtendsClass().getName().length()-4).equals("Impl"))
         {
@@ -2645,6 +2647,9 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
           remoteContent+=NL+"  "+realClassName+" realObject;"+NL;
           remoteContent+="  public void setRealObject("+realClassName+" aObject)"+NL+"  {"+NL;
           remoteContent+="    realObject=aObject;"+NL+"  }"+NL;
+          remoteContent+="  public "+remoteName+"()"+NL+"  {}"+NL;
+          remoteContent+="  public "+remoteName+"("+realClassName+" aObject)"+NL+"    {"+NL;
+          remoteContent+=remoteClassSuperCall+"    realObject=aObject;"+NL+"  }"+NL; 
         }
         
         
