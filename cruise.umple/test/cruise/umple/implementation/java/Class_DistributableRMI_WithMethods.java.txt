@@ -26,7 +26,7 @@ public class Microwave implements java.io.Serializable, IMicrowaveImpl, Runnable
   private  transient boolean isButtonPressed;
 
   //Microwave State Machines
-  public transient  enum OperatingMicrowaveStateMachine { readyToCook, doorOpen, cooking, cookingInterrupted, cookingComplete, cookingExtended }
+  public enum OperatingMicrowaveStateMachine { readyToCook, doorOpen, cooking, cookingInterrupted, cookingComplete, cookingExtended }
   private transient  OperatingMicrowaveStateMachine operatingMicrowaveStateMachine;
   
   //enumeration type of messages accepted by Microwave

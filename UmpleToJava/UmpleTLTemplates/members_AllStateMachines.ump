@@ -14,11 +14,11 @@ class UmpleToJava {
       isFirst = false;
     }
   
-    append(realSb, "\n  public{2} enum {0} { {1} }", gen.translate("type", sm), gen.translate("listStates", sm));
+    append(realSb, "\n  public enum {0} { {1} }", gen.translate("type", sm), gen.translate("listStates", sm));
 
     for (StateMachine nestedSm : allNested)
     {
-      append(realSb, "\n  public{2} enum {0} { {1} }", gen.translate("type", nestedSm), 
+      append(realSb, "\n  public enum {0} { {1} }", gen.translate("type", nestedSm), 
              gen.translate("listStates",nestedSm));
     }
     
