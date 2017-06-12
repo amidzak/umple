@@ -357,6 +357,7 @@ public class UmpleRuntime implements IUmpleRuntime
             {
               System.err.println("Client exception: " + e.toString());
               e.printStackTrace();
+              try { Thread.sleep(1000); } catch (InterruptedException interruptedException) {};
             }
           } 
         } 
@@ -389,8 +390,7 @@ public class UmpleRuntime implements IUmpleRuntime
       System.out.println("Component stopped");
     }
     <<#}
-    //if(model.getDistributeTechnology().equals("WS"))
-    if(false)
+    if(model.getDistributeTechnology().equals("WS"))
     {
     #>>
     public void initialize()
@@ -400,7 +400,7 @@ public class UmpleRuntime implements IUmpleRuntime
       readConfigFile();
       int numberOfNodes= nodes.size();
       System.out.println(getThisNodeId());
-      Endpoint.publish(nodes.get(getThisNodeId()).getUrl()+":"+String.valueOf(nodes.get(getThisNodeId()).getPort())+"/hw",this);
+      Endpoint.publish(nodes.get(getThisNodeId()).getUrl()+":"+String.valueOf(nodes.get(getThisNodeId()).getPort())+"/UmpleRuntime"+String.valueOf(getThisNodeId()),this);
 
       for(int node=0;node<numberOfNodes;node=node+1)
       {
@@ -414,7 +414,7 @@ public class UmpleRuntime implements IUmpleRuntime
           {
             try 
             {
-              URL url = new URL(nodes.get(node).getUrl()+String.valueOf(nodes.get(node).getPort())+"/hw?wsdl");
+              URL url = new URL(nodes.get(node).getUrl()+String.valueOf(nodes.get(node).getPort())+"/UmpleRuntime"+String.valueOf(node)+"?wsdl");
              
               QName qname = new QName("<<#append(realSb,qname);#>>",
                   "UmpleRuntimeService");
@@ -427,6 +427,7 @@ public class UmpleRuntime implements IUmpleRuntime
             {
               System.err.println("Client exception: " + e.toString());
               e.printStackTrace();
+              try { Thread.sleep(1000); } catch (InterruptedException interruptedException) {};
             }
           } 
         } 
