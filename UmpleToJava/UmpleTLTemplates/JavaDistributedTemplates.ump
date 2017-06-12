@@ -28,7 +28,7 @@ class JavaDistributedTemplates {
     #>>
 
   public  String remoteUrl;
-  public  Integer objectId;
+  public  String objectId;
   public  String remotePort; 
     <<#}#>>
   private static <<=remoteName>> umplenewInstance()
@@ -82,13 +82,13 @@ class JavaDistributedTemplates {
   }
   private void initializeConnection()
   {
-    if(this.getClass()== <<=uClass.getName()>>.class)
+    if(objectId.contains(<<=uClass.getName()>>.class.getName()))
     {  
       boolean success = false;
       while (!success) {        
         try 
         {
-          URL url = new URL(remoteUrl+":"+remotePort+"/<<=remoteName>>"+String.valueOf(objectId)+"?wsdl");
+          URL url = new URL(remoteUrl+":"+remotePort+"/<<=remoteName>>"+objectId+"?wsdl");
           QName qname = new QName("http://<<=packageName>>/","<<=remoteName>>Service");
           Service service = Service.create(url, qname);
           setRealObject(service.getPort(<<=interfaceName>>.class));
@@ -140,9 +140,9 @@ class JavaDistributedTemplates {
   protected <<=remoteName>>()
   {
   }
-  public <<=remoteName>>(String url,String port,Integer objectId)
+  public <<=remoteName>>(String url,String port,String objectId)
   {
-    Endpoint.publish(url+":"+port+"/<<=remoteName>>"+String.valueOf(objectId),this);
+    Endpoint.publish(url+":"+port+"/<<=remoteName>>"+objectId,this);
   }
 
  !>>

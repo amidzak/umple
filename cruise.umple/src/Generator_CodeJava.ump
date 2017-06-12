@@ -2478,7 +2478,17 @@ the if(parent.getHasProxyPattern()) is neccessary to check if the parent's real 
     if(getModel().getDistributed()==true)
     {
       if(aClass.getIsDistributed()==false)
+      {
         genClass.addMultiLookup("import", "java.io.Serializable");
+        if(getModel().getDistributeTechnology().equals("WS"))
+        {
+          genClass.addMultiLookup("import", "javax.xml.bind.annotation.XmlAccessorType");
+          genClass.addMultiLookup("import", "javax.xml.bind.annotation.XmlAccessType");
+        }
+        {
+
+        }
+      }
     }
 
     if(aClass.getIsDistributed()==true)

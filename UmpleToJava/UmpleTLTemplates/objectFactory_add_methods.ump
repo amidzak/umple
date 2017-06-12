@@ -77,9 +77,9 @@ class UmpleToJava {
         #>>
         object.remoteUrl=nodes.get(getThisNodeId()).getUrl();
         object.remotePort=String.valueOf(nodes.get(getThisNodeId()).getPort());
-        object.objectId=object.getHashCodeImpl();
+        object.objectId=object.getClass().getName()+String.valueOf(object.getHashCodeImpl());
         object.setRealObject(object);
-        Endpoint.publish(object.remoteUrl+":"+object.remotePort+"/"+object.getClass().getSimpleName()+String.valueOf(object.objectId),object);
+        Endpoint.publish(object.remoteUrl+":"+object.remotePort+"/"+object.getClass().getSimpleName()+object.objectId,object);
         <<#}#>>  
     }
     
