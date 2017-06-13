@@ -64,18 +64,6 @@ class JavaDistributedTemplates {
     #>>
     realObject=aObject;
   }
-  private void readObject(java.io.ObjectInputStream in) throws Exception
-  {
-    try
-    {
-      in.defaultReadObject();
-    }
-    catch(Exception e)
-    {
-      throw e;
-    }
-    initializeConnection();
-  }
   void afterUnmarshal(Unmarshaller u, Object parent)
   {
     initializeConnection();
